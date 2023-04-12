@@ -10,6 +10,11 @@
     </section>
 </template>
 
-<script setup>
- 
+<script>
+export default {
+  name: "home",
+  data() {
+    return {}
+  }
+}
 </script>
