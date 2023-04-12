@@ -1,18 +1,22 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{vue,js,ts,jsx,tsx}",
-  ],
+  content: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
   theme: {
     extend: {
       colors: {
         green: "#CDE990",
         darkgreen: "#AACB73",
-        lightpink: "#FFD4D4"
-      }
-    },
+        lightpink: "#FFD4D4",
+      },
+        container: {
+          center: true,
+          padding: {
+            DEFAULT: '1.25rem',
+            xl: '15rem',
+          },
+        },
+      },
+    
   },
   plugins: [],
-}
-
+};

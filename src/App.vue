@@ -1,7 +1,7 @@
 <template>
-  <header class="sticky top-0 z-50 bg-white">
+  <header class="sticky py-5 top-0 z-50 bg-white">
     <div
-      class="container mx-auto p-7 flex flex-wrap justify-between items-center lg:px-28"
+      class="container flex flex-wrap justify-between items-center"
     >
       <h2 class="text-lg font-semibold tracking-tight leading-5">
         Срок<br />годности
@@ -19,69 +19,61 @@
         v-bind:class="{ hidden: !showMobileMenu }"
       />
       <div
-        class="my-7 hidden md:flex basis-full md:basis-auto md:items-center md:justify-between md:gap-3 lg:space-x-10"
+        class="hidden md:flex basis-full md:basis-auto md:items-center md:justify-between md:gap-3 lg:space-x-10"
         v-bind:class="{ 'is-active': showMobileMenu }"
       >
         <nav>
-          <ul
-            class="flex flex-col items-center text-center divide-y-2 divide-darkgreen border-b-black/25 md:flex-row md:divide-y-0 md:gap-3"
+          <div
+            class="flex flex-col my-5 md:my-0 items-center text-center divide-y-2 divide-darkgreen border-b-black/25 md:flex-row md:divide-none md:gap-3"
           >
-            <li
-              class="hover:bg-green p-3 transition-all cursor-pointer w-full text-sm md:rounded-2xl md:text-base"
-            >
+            <router-link to="/" class="rounded-xl bg-white py-2 px-5 transition-all cursor-pointer hover:bg-green hover:text-black border-white text-sm text-center align-middle md:text-base hover:border-green max-md:w-full max-md:rounded-none">
               Главная
-            </li>
-            <li
-              class="hover:bg-green p-3 transition-all cursor-pointer w-full text-sm md:rounded-2xl md:text-base"
-            >
+            </router-link>
+            <router-link to="/recipes" class="rounded-xl bg-white py-2 px-5 transition-all cursor-pointer hover:bg-green hover:text-black border-white text-sm text-center align-middle md:text-base hover:border-green max-md:w-full max-md:rounded-none">
               Рецепты
-            </li>
-            <li
-              class="hover:bg-green p-3 transition-all cursor-pointer w-full text-sm md:rounded-2xl md:text-base"
-            >
+            </router-link>
+            <a class="rounded-xl bg-white py-2 px-5 transition-all cursor-pointer hover:bg-green hover:text-black border-white text-sm text-center align-middle md:text-base hover:border-green max-md:w-full max-md:rounded-none">
               Советы
-            </li>
-          </ul>
+            </a>
+          </div>
         </nav>
         <div class="grid min-[320px]:grid-cols-2 gap-3 my-5 md:my-0">
-          <a
-            href="#"
-            class="rounded-xl bg-green p-2 px-6 transition-all hover:bg-white hover:text-black border-green border-2 text-sm text-center align-middle md:h-full md:text-base"
-            >Войти</a
-          >
-          <a
-            href="#"
-            class="rounded-xl bg-green p-2 px-6 transition-all hover:bg-white hover:text-black border-green border-2 text-sm text-center align-middle md:h-full md:text-base"
-            >Регистрация</a
-          >
+          <a class="rounded-xl bg-green py-2 px-6 transition-all cursor-pointer hover:bg-white hover:text-black border-green border-2 text-sm text-center align-middle md:text-base">
+              Войти
+            </a>
+            <a class="rounded-xl bg-green py-2 px-6 transition-all cursor-pointer hover:bg-white hover:text-black border-green border-2 text-sm text-center align-middle md:text-base">
+              Регистрация
+            </a>
         </div>
       </div>
     </div>
   </header>
   <router-view />
-  <footer>
+  <footer class="bg-gray-800">
     <div
-      class="container p-7 flex flex-col justify-between bg-gray-800 text-gray-100 space-y-7"
+      class="container flex flex-col md:flex-row justify-between items-center text-gray-100 space-y-7 md:space-y-0 py-10"
     >
       <h2 class="text-lg font-semibold tracking-tight leading-5">
         Срок<br />годности
       </h2>
-      <ul class="flex flex-col md:divide-x-2 divide-black space-y-">
-        <li class="transition-all cursor-pointer w-full text-sm">Главная</li>
-        <li class="transition-all cursor-pointer w-full text-sm">Рецепты</li>
-        <li class="transition-all cursor-pointer w-full text-sm">Советы</li>
-      </ul>
+      <div class="flex flex-col md:flex-row justify-start space-y-1 md:space-y-0 md:space-x-4 text-sm">
+        <a class="transition-all cursor-pointer hover:underline">Главная</a>
+        <router-link to="/recipes" class="transition-all cursor-pointer hover:underline">Рецепты</router-link>
+        <a class="transition-all cursor-pointer hover:underline">Советы</a>
+      </div>
     </div>
   </footer>
 </template>
 
 <script>
+import Button from './components/Button.vue'
+
 export default {
   data() {
     return {
       showMobileMenu: false,
     };
-  },
+  }
 };
 </script>
 
