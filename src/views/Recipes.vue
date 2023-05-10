@@ -1,7 +1,44 @@
 <template>
-  <div class="container my-10">
-    <button @click="IsTable = true">Таблица |</button>
-    <button @click="IsTable = false">Карточки</button>
+  <div class="container">
+    <div v-if="user">
+      <!-- <button @click="IsTable = true">Таблица |</button>
+      <button @click="IsTable = false">Карточки</button> -->
+    </div>
+    <my-bokan @sidebar="sidebarIsHidden = !sidebarIsHidden" />
+    <!-- Фильтры -->
+    <div class="flex justify-between mt-2">
+      <div
+        style="user-select: none"
+        class="shadow-xl py-2 px-4 bg-gray-100 rounded-2xl hover:bg-gray-200 cursor-pointer transition-all block w-fit ml-auto md:mr-auto md:ml-0 mb-4"
+        @click="sidebarIsHidden = !sidebarIsHidden"
+      >
+        Фильтры
+        <font-awesome-icon
+          :icon="['fas', 'arrow-left']"
+          :class="{
+            'rotate-0 md:rotate-180': sidebarIsHidden,
+            'rotate-180 md:rotate-0': !sidebarIsHidden,
+          }"
+          class="transition-all ml-2"
+        />
+      </div>
+      <div>
+        <div
+          style="user-select: none"
+          @click="changeSort"
+          class="shadow-xl py-2 px-4 bg-gray-100 rounded-2xl hover:bg-gray-200 cursor-pointer transition-all inline-block w-fit  mb-4"
+        >
+          Сортировка
+        </div>
+        <input 
+          type="text"
+          class="shadow-xl py-2 px-4 bg-gray-100 rounded-2xl hover:bg-gray-200 transition-all inline-block w-fit ml-3 mb-4"
+          v-model="search"
+          placeholder="Поиск..."
+        />
+      </div>
+    </div>
+    <!-- Основной контент -->
     <div class="flex gap-3" :class="{ hidden: !IsTable }">
       <table class="min-w-full bg-white">
         <thead class="bg-gray-800 text-white">
@@ -22,9 +59,9 @@
           </tr>
         </thead>
         <tbody class="text-gray-700 [&>*:nth-child(even)]:bg-gray-100">
-          <tr v-for="item in current_items" :key="item.id">
+          <tr v-for="item in current_recipes" :key="item.id">
             <td class="w-1/3 text-left py-3 px-4">{{ item.title }}</td>
-            <td class="w-1/3 text-left py-3 px-4">{{ item.place }}</td>
+            <td class="w-1/3 text-left py-3 px-4">{{ item.storage }}</td>
             <td class="text-left py-3 px-4">
               <a class="hover:text-blue-500">{{ item.content }}</a>
             </td>
@@ -33,113 +70,68 @@
       </table>
     </div>
     <div class="flex gap-3" :class="{ hidden: IsTable }">
-      <div class="bg-gray-100 p-10 rounded-lg">
-        <div class="divide-solid divide-black divide-y-0 flex flex-col gap-2">
-          <h2 class="text-lg">Место хранения</h2>
-          <div class="mt-2">
-            <input
-              type="checkbox"
-              id="check1"
-              value="комод"
-              @change="FilterPlace($event)"
-            />
-            <label for="check1" class="p-3">Комод</label>
-          </div>
-          <div>
-            <input type="checkbox" id="check2" value="Холодильник" />
-            <label for="check2" class="p-3">Холодильник</label>
-          </div>
-        </div>
-      </div>
+      <sidebar
+        class="fixed right-0 top-0 bottom-0 z-10 md:relative p-5"
+        :class="{
+          'left-full md:relative md:-left-1/2 md:hidden': sidebarIsHidden,
+          'left-1/3 md:left-0': !sidebarIsHidden,
+        }"
+      >
+        <my-button class="md:hidden" @click="sidebarIsHidden = true"
+          >Закрыть</my-button
+        >
+        <my-accordion
+          v-for="option in filterOptions"
+          :key="option.name"
+          :title="option.name"
+        >
+          <!-- <my-accordion
+          v-for="option in filterOptions"
+          :key="option.name"
+          :title="option.name"
+          :class="{ '[&>*]:invisible': sidebarIsHidden }"
+        > -->
+          <Filter
+            v-for="value in option.values"
+            :type="option.type"
+            :name="value.name"
+            :value="value.value"
+            :key="value.id"
+            @change="
+              (filter, isForAdding) =>
+                isForAdding
+                  ? this.store.addFilter(filter)
+                  : this.store.removeFilter(filter)
+            "
+          />
+        </my-accordion>
+      </sidebar>
       <div class="flex-1">
         <div
           class="grid max-sm:justify-center max-sm:gap-y-5 sm:grid-cols-2 lg:grid-cols-3 sm:gap-3"
         >
-          <div
-            class="h-full relative transition-all"
-            :class="{ 'cursor-pointer': !IsAdding }"
-          >
-            <font-awesome-icon
-              :icon="['fas', 'plus']"
-              class="absolute box-border z-50 h-full w-full p-10 lg:p-20 transition-all hover:scale-150"
-              @click="IsAdding = !IsAdding"
-              :class="{ hidden: IsAdding }"
-            />
-            <div
-              class="bg-green hover:scale-100 hover:drop-shadow-2xl transition-all rounded-lg h-full overflow-hidden"
-              :class="{ 'blur-sm': !IsAdding }"
-            >
-              <input
-                type="text"
-                class="bg-inherit placeholder:text-gray-800 p-3 text-lg focus-visible:outline-none rounded-lg"
-                v-model="title"
-                placeholder="Название"
-              />
-              <div
-                class="bg-gray-100 rounded-b-lg h-full flex flex-col justify-between"
-              >
-                <div class="p-5">
-                  <input
-                    type="text"
-                    class="bg-inherit placeholder:text-gray-800 pb-3 text-xl focus-visible:outline-none"
-                    v-model="place"
-                    placeholder="Место хранения"
-                  />
-                  <input
-                    type="text"
-                    class="bg-inherit placeholder:text-gray-800 focus-visible:outline-none"
-                    v-model="content"
-                    placeholder="Описание"
-                  />
-                </div>
-                <div class="flex justify-between">
-                  <button
-                    class="bg-green py-2 px-4 rounded-bl-lg hover:bg-lime-400"
-                    @click="IsAdding = !IsAdding"
-                  >
-                    Отмена
-                  </button>
-                  <button
-                    class="bg-green py-2 px-4 rounded-br-lg hover:bg-lime-400"
-                    @click="addRecipe"
-                  >
-                    Добавить
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <!-- <add-card
+            v-model:title="title"
+            v-model:storage="storage"
+            v-model:content="content"
+            v-if="user"
+          /> -->
           <card
-            v-for="item in current_items"
+            v-for="item in store.SearchedSortedFilteredAndLimitedRecipes"
             :title="item.title"
-            :place="item.place"
-            :content="item.content"
+            :storage="item.storage"
+            :products="item.products"
             :key="item.id"
-          />
+            class="cursor_pointer"
+            @click="this.$router.push('/recipes/' + item.id)"
+            >{{ item.content }}</card
+          >
         </div>
       </div>
     </div>
     <div class="my-16 flex justify-between gap-16">
-      <ul class="flex justify-center text-gray-700">
-        <li
-          class="transition-all hover:bg-green bg-white py-3 px-5 cursor-pointer"
-        >
-          &lt;&lt;
-        </li>
-        <router-link
-          :to="`recipes?page=${num}`"
-          class="transition-all hover:bg-green bg-white py-3 px-5 cursor-pointer"
-          v-for="num in pages"
-          :key="num"
-          >{{ num }}</router-link
-        >
-        <li
-          class="transition-all hover:bg-green bg-white py-3 px-5 cursor-pointer"
-        >
-          >>
-        </li>
-      </ul>
-      <select @change="loadPage()" v-model="len" class="w-24 px-3">
+      <Pagination v-model="page" :total_pages="total_pages" />
+      <select v-model="limit" class="w-24 px-3">
         <option value="2">test 2</option>
         <option value="3">test 3</option>
         <option value="5">5</option>
@@ -152,125 +144,118 @@
 
 <script>
 import Card from "../components/Card.vue";
+import AddCard from "../components/AddCard.vue";
 import Sidebar from "../components/Sidebar.vue";
+import Filter from "../components/Filter.vue";
+import Pagination from "../components/Pagination.vue";
+// import BarOnTop from "../components/BarOnTop.vue";
+import { useUserStore } from "../stores/UserStore";
+import { useRecipesStore } from "../stores/RecipesStore";
+import { useProductsStore } from "../stores/ProductsStore";
+import { storeToRefs } from "pinia";
+import { computed } from "vue";
+import { useStoragesStore } from "../stores/StoragesStore";
 
 export default {
   data() {
     return {
       name: "Recipes",
-      items: [
-        {
-          id: 50,
-          title: "Бобер",
-          place: "холодильник",
-          content: "lorem",
-        },
-      ],
-      len: 5,
-      pages: [],
-      current_items: [],
+      total_pages: 1,
+      current_recipes: [],
       IsAdding: false,
       title: "",
-      place: "",
+      storage: "",
       content: "",
-      filter_place: "",
       IsTable: false,
+      sidebarIsHidden: true,
+      // filterOptions: [
+      //   {
+      //     name: "Место хранения",
+      //     type: "storage",
+      //     values: ["Комод", "Холодильник"],
+      //   },
+      // ],
+      // currentFilters: [ {type: "", value: ""} ],
     };
-  },
-  watch: {
-    len() {
-      localStorage.setItem("length", this.len);
-    },
-    filter_place() {
-      if (this.filter_place == "") {
-      }
-      console.log(this.items.filter((x) => x.place == this.filter_place));
-      this.current_items = this.items.filter(
-        (x) => x.place == this.filter_place
-      );
-    },
   },
   components: {
     Card,
     Sidebar,
+    AddCard,
+    Filter,
+    Pagination,
+  },
+  // created() {
+  //   this.$watch(
+  //     () => this.$route.query,
+  //     (query) => {
+  //       this.loadPage(query.page);
+  //     }
+  //   );
+  // },
+  methods: {
+    calculateTotalPages() {
+      this.total_pages = Math.ceil(this.recipes.length / this.limit);
+    },
+    changeSort() {
+      if (this.sorted === "+") {
+        this.sorted = "-"
+      } else {
+        this.sorted = "+"
+      }
+    }
   },
   mounted() {
-    this.getLength();
-    this.getItems();
+    this.calculateTotalPages();
   },
-  created() {
-    this.$watch(
-      () => this.$route.query,
-      (query) => {
-        this.loadPage(query.page);
-      }
+  watch: {
+    limit() {
+      this.calculateTotalPages();
+    },
+  },
+  setup() {
+    const { user } = storeToRefs(useUserStore());
+    const store_products = useProductsStore();
+    const store_storages = useStoragesStore();
+    const store = useRecipesStore();
+    const { recipes, SearchedSortedFilteredAndLimitedRecipes, page, limit, search, sorted } =
+      storeToRefs(store);
+    store_products.fetchProducts();
+    store_storages.fetchStorages();
+    const { products } = storeToRefs(store_products);
+    const { storages } = storeToRefs(store_storages);
+    let filterOptions = [
+      { type: "product", name: "Продукты", values: [] },
+      { type: "storage", name: "Места хранения", values: [] },
+    ];
+    products.value.forEach((product) =>
+      filterOptions[0].values.push({
+        id: product.id,
+        value: product.id,
+        name: product.name,
+      })
     );
+    storages.value.forEach((storage) =>
+      filterOptions[1].values.push({
+        id: storage.id,
+        value: storage.storage,
+        name: storage.storage,
+      })
+    );
+    store.fetchRecipes();
+    store.fetchProducts();
+
+    return {
+      user,
+      filterOptions,
+      recipes,
+      store,
+      page,
+      limit,
+      search,
+      SearchedSortedFilteredAndLimitedRecipes,
+      sorted
+    };
   },
-  methods: {
-    getItems() {
-      for (var i = 1; i < 6; i++) {
-        this.items.push({
-          id: i,
-          title: "Обычный помидор",
-          content:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed lectus orci, iaculis vel blandit sed, euismod sed augue. Proin posuere turpis nisi, ac varius ipsum elementum in.",
-          place: "комод",
-        });
-      }
-
-      this.loadPage();
-    },
-    getLength() {
-      if (localStorage.getItem("length")) {
-        this.len = localStorage.getItem("length");
-      } else {
-        localStorage.setItem("length", this.len);
-      }
-    },
-    loadPage() {
-      // temp = (len*page_number)-(len*page_number-1)
-      // this.items = t_items.slice((len*page_number-1), (len*page_number))
-      //var totalPages = (this.items.length / this.len).toFixed();
-
-      //for (var i = 1; i <= totalPages; i++) {
-      //  this.pages.push(i);
-      //}
-
-      let page_number = 1;
-      if (this.$route.query.page) {
-        page_number = this.$route.query.page;
-      }
-
-      this.current_items = [];
-
-      var slice_items = [];
-      for (var i = 0; i < this.items.length; i += this.len) {
-        var chunk = this.items.slice(i, i + this.len);
-        slice_items.push(chunk);
-      }
-
-      this.pages = [...Array(slice_items.length).keys()].map((x) => x + 1);
-      this.current_items = slice_items[page_number - 1];
-    },
-    addRecipe() {
-      const recipe = {
-        id: Date.now(),
-        title: this.title,
-        place: this.place,
-        content: this.content,
-      };
-
-      console.log(recipe);
-      this.items.push(recipe);
-    },
-    FilterPlace(event) {
-      console.log(!event.target.checked);
-      if (!event.target.checked) {
-        this.filter_place = "asfaslfsa";
-      }
-      this.filter_place = event.target.value;
-    },
-  },
-  computed: {},
 };
 </script>

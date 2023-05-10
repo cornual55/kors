@@ -4,16 +4,12 @@
       backface-visibility: hidden;
       -webkit-font-smoothing: subpixel-antialiased;
     "
-    class="card bg-green/70 hover:scale-105 hover:perspec hover:shadow-2xl transition-all rounded-lg h-[16rem] flex flex-col overflow-y-hidden"
+    class="bg-green hover:scale-105 hover:perspec hover:shadow-2xl transition-all rounded-lg h-[16rem] flex flex-col overflow-y-hidden"
   >
-    <h2
-      class="title tracking-wider text-center transition-all px-3 py-3 text-lg"
-    >
-      {{ title }}
-    </h2>
-    <div class="main bg-gray-100/90 p-5 rounded-b-lg flex-1">
+    <h2 class="p-3 text-lg">{{ title }}</h2>
+    <div class="bg-gray-100 p-5 rounded-b-lg flex-1">
       <h3 class="pb-3 text-xl" v-if="storage">{{ storage }}</h3>
-      <div class="content text-sm">
+      <div class="content">
         <!-- Для рецепта понадобится: -->
         <table>
           <tr v-for="product in products">
@@ -35,10 +31,6 @@ export default {
 </script>
 
 <style scoped>
-.card:hover .title {
-  padding-bottom: 0.5rem !important;
-  padding-top: 0.5rem !important;
-}
 .scrollbar::-webkit-scrollbar {
   width: 10px; /* width of the entire scrollbar */
 }

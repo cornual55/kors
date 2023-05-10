@@ -1,10 +1,10 @@
 <template>
   <section
-    class="w-full bg-gradient-to-r from-[#ffd5d4] from-10% to-[#fff9e5] to-90% flex justify-center items-center h-full"
+    class="w-full bg-gradient-to-r from-[#ffd5d4] from-10% to-[#fff9e5] to-90% flex justify-center items-center"
   >
     <div class="container py-20 grid md:grid-cols-2">
       <h1
-        class="font-bold text-3xl text-center md:text-left lg:text-5xl lg:py-20 lg:tracking-wider lg:max-w-lg bg-clip-text bg-gradient-to-r from-gray-800 to-gray-600 text-transparent"
+        class="font-bold text-4xl text-center md:text-left lg:text-6xl lg:py-28 lg:tracking-wider lg:max-w-lg bg-clip-text bg-gradient-to-r from-gray-800 to-gray-600 text-transparent"
         style="font-family: 'Comfortaa', cursive"
       >
         Начните следить за свежестью своих продуктов прямо сейчас
@@ -29,7 +29,7 @@
       </div>
     </div>
   </section>
-  <section class="container text-lg py-20 text-center hidden">
+  <section class="container text-lg py-20 text-center">
     <h2>
       Нам доверяют множество людей, <b>таганрок vision</b> позволит вам
       отслеживать срок годности продукции и не только
