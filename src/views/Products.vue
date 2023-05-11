@@ -11,7 +11,8 @@
         :storage_options="storage_options"
         @create="createProduct"
         >Добавление продукта</product-form
-      ></my-dialog>
+      ></my-dialog
+    >
     <my-dialog v-model:show="isChanging"
       ><product-form :product="{ ...current_product }" @create="changeProduct"
         >Изменение продукта</product-form
@@ -27,8 +28,8 @@
           <th>Продукт</th>
           <th>Количество</th>
           <th>Место хранения</th>
-          <th>Дата начала</th>
-          <th>Дата окончания</th>
+          <th>Дата изготовления</th>
+          <th>Годен до</th>
           <th>Статус продукта</th>
           <th>Изменить</th>
           <th>Удалить</th>
@@ -52,7 +53,7 @@
           </td>
           <td style="text-align: center !important">
             <font-awesome-icon
-              @click="deleteProduct(product)"
+              @click="store.deleteProduct(product)"
               :icon="['far', 'trash-can']"
               class="text-gray-700/70 transition-all text-2xl cursor-pointer hover:text-gray-700"
             />
@@ -68,7 +69,7 @@ import Sidebar from "../components/Sidebar.vue";
 import ProductForm from "../components/ProductForm.vue";
 import { useProductsStore } from "../stores/ProductsStore";
 import { storeToRefs } from "pinia";
-import {ref} from 'vue'
+import { ref } from "vue";
 import { useStoragesStore } from "../stores/StoragesStore";
 
 export default {
@@ -76,7 +77,7 @@ export default {
     return {
       isAdding: false,
       isChanging: false,
-      current_product: {}
+      current_product: {},
     };
   },
   components: {
@@ -101,12 +102,12 @@ export default {
     store.fetchStorages();
     const storage_options = ref([]);
     store_storages.fetchStorages();
-    store_storages.storages.forEach(st => {
+    store_storages.storages.forEach((st) => {
       storage_options.value.push({
         name: st.storage,
-        value: st.id
-      })
-    })
+        value: st.id,
+      });
+    });
 
     return { products, store, storage_options };
   },

@@ -14,6 +14,7 @@ export const useUserStore = defineStore("user", {
     async signUp(name, password) {
       this.user = {};
       this.user.name = "Анатолий";
+      
       // axios
       //   .post("/auth/sign-up", {
       //     name: "cornual",

@@ -26,11 +26,11 @@
         <div
           style="user-select: none"
           @click="changeSort"
-          class="shadow-xl py-2 px-4 bg-gray-100 rounded-2xl hover:bg-gray-200 cursor-pointer transition-all inline-block w-fit  mb-4"
+          class="shadow-xl py-2 px-4 bg-gray-100 rounded-2xl hover:bg-gray-200 cursor-pointer transition-all inline-block w-fit mb-4"
         >
           Сортировка
         </div>
-        <input 
+        <input
           type="text"
           class="shadow-xl py-2 px-4 bg-gray-100 rounded-2xl hover:bg-gray-200 transition-all inline-block w-fit ml-3 mb-4"
           v-model="search"
@@ -71,7 +71,7 @@
     </div>
     <div class="flex gap-3" :class="{ hidden: IsTable }">
       <sidebar
-        class="fixed right-0 top-0 bottom-0 z-10 md:relative p-5"
+        class="fixed right-0 top-0 bottom-0 z-50 md:relative p-5"
         :class="{
           'left-full md:relative md:-left-1/2 md:hidden': sidebarIsHidden,
           'left-1/3 md:left-0': !sidebarIsHidden,
@@ -117,14 +117,14 @@
             v-if="user"
           /> -->
           <card
-            v-for="item in store.SearchedSortedFilteredAndLimitedRecipes"
-            :title="item.title"
-            :storage="item.storage"
-            :products="item.products"
-            :key="item.id"
+            v-for="recipe in store.SearchedSortedFilteredAndLimitedRecipes"
+            :title="recipe.title"
+            :storage="recipe.storage"
+            :products="recipe.products"
+            :key="recipe.id"
             class="cursor_pointer"
-            @click="this.$router.push('/recipes/' + item.id)"
-            >{{ item.content }}</card
+            @click="this.$router.push('/recipes/' + recipe.id)"
+            >{{ recipe.content }}</card
           >
         </div>
       </div>
@@ -199,11 +199,11 @@ export default {
     },
     changeSort() {
       if (this.sorted === "+") {
-        this.sorted = "-"
+        this.sorted = "-";
       } else {
-        this.sorted = "+"
+        this.sorted = "+";
       }
-    }
+    },
   },
   mounted() {
     this.calculateTotalPages();
@@ -218,8 +218,14 @@ export default {
     const store_products = useProductsStore();
     const store_storages = useStoragesStore();
     const store = useRecipesStore();
-    const { recipes, SearchedSortedFilteredAndLimitedRecipes, page, limit, search, sorted } =
-      storeToRefs(store);
+    const {
+      recipes,
+      SearchedSortedFilteredAndLimitedRecipes,
+      page,
+      limit,
+      search,
+      sorted,
+    } = storeToRefs(store);
     store_products.fetchProducts();
     store_storages.fetchStorages();
     const { products } = storeToRefs(store_products);
@@ -254,7 +260,7 @@ export default {
       limit,
       search,
       SearchedSortedFilteredAndLimitedRecipes,
-      sorted
+      sorted,
     };
   },
 };
