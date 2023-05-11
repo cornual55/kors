@@ -4,40 +4,12 @@
       <!-- <button @click="IsTable = true">Таблица |</button>
       <button @click="IsTable = false">Карточки</button> -->
     </div>
-    <my-bokan @sidebar="sidebarIsHidden = !sidebarIsHidden" />
     <!-- Фильтры -->
-    <div class="flex justify-between mt-2">
-      <div
-        style="user-select: none"
-        class="shadow-xl py-2 px-4 bg-gray-100 rounded-2xl hover:bg-gray-200 cursor-pointer transition-all block w-fit ml-auto md:mr-auto md:ml-0 mb-4"
-        @click="sidebarIsHidden = !sidebarIsHidden"
-      >
-        Фильтры
-        <font-awesome-icon
-          :icon="['fas', 'arrow-left']"
-          :class="{
-            'rotate-0 md:rotate-180': sidebarIsHidden,
-            'rotate-180 md:rotate-0': !sidebarIsHidden,
-          }"
-          class="transition-all ml-2"
-        />
-      </div>
-      <div>
-        <div
-          style="user-select: none"
-          @click="changeSort"
-          class="shadow-xl py-2 px-4 bg-gray-100 rounded-2xl hover:bg-gray-200 cursor-pointer transition-all inline-block w-fit mb-4"
-        >
-          Сортировка
-        </div>
-        <input
-          type="text"
-          class="shadow-xl py-2 px-4 bg-gray-100 rounded-2xl hover:bg-gray-200 transition-all inline-block w-fit ml-3 mb-4"
-          v-model="search"
-          placeholder="Поиск..."
-        />
-      </div>
-    </div>
+    <TopBar
+      v-model:search="search"
+      @click_sort="changeSort"
+      @click_filter="sidebarIsHidden = !sidebarIsHidden"
+    />
     <!-- Основной контент -->
     <div class="flex gap-3" :class="{ hidden: !IsTable }">
       <table class="min-w-full bg-white">
@@ -119,13 +91,21 @@
           <card
             v-for="recipe in store.SearchedSortedFilteredAndLimitedRecipes"
             :title="recipe.title"
-            :storage="recipe.storage"
             :products="recipe.products"
             :key="recipe.id"
             class="cursor_pointer"
             @click="this.$router.push('/recipes/' + recipe.id)"
-            >{{ recipe.content }}</card
           >
+            {{ recipe.content }}
+
+            <!-- <div class="mt-2 font-semibold">Для рецепта понадобится:</div>
+            <table class="mt-3">
+              <tr v-for="product in recipe.products">
+                <td class="px-2">{{ product.quantity }}</td>
+                <td class="px-2">{{ product.name }}</td>
+              </tr>
+            </table> -->
+          </card>
         </div>
       </div>
     </div>
@@ -148,6 +128,7 @@ import AddCard from "../components/AddCard.vue";
 import Sidebar from "../components/Sidebar.vue";
 import Filter from "../components/Filter.vue";
 import Pagination from "../components/Pagination.vue";
+import TopBar from "../components/TopBar.vue";
 // import BarOnTop from "../components/BarOnTop.vue";
 import { useUserStore } from "../stores/UserStore";
 import { useRecipesStore } from "../stores/RecipesStore";
@@ -184,6 +165,7 @@ export default {
     AddCard,
     Filter,
     Pagination,
+    TopBar,
   },
   // created() {
   //   this.$watch(

@@ -16,7 +16,7 @@
       >
         <span
           aria-hidden="true"
-          class="block absolute h-0.5 w-5 bg-current transform transition duration-500 ease-in-out"
+          class="block absolute h-0. w-5 bg-current transform transition duration-500 ease-in-out"
           :class="{
             'rotate-45': showMobileMenu,
             ' -translate-y-1.5': !showMobileMenu,
@@ -64,21 +64,11 @@
       >
         <my-button @click="isLogging = true">Войти</my-button>
         <my-dialog v-model:show="isLogging">
-          <log-in-form
-            @signup="
-              isLogging = false;
-              store.fetchUser();
-            "
-          ></log-in-form>
+          <log-in-form @signup="isLogging = false"></log-in-form>
         </my-dialog>
         <my-button @click="isRegistering = true">Регистрация</my-button>
         <my-dialog v-model:show="isRegistering">
-          <sign-up-form
-            @signup="
-              isRegistering = false;
-              store.fetchUser();
-            "
-          ></sign-up-form>
+          <sign-up-form @signup="isRegistering = false"></sign-up-form>
         </my-dialog>
         <!-- <a
           class="rounded-xl bg-green py-2 px-6 transition-all cursor-pointer hover:bg-white hover:text-black border-green border-2 text-sm text-center align-middle md:text-base"
@@ -103,6 +93,7 @@ import { storeToRefs } from "pinia";
 import SignUpForm from "../components/SignUpForm.vue";
 import LogInForm from "../components/LogInForm.vue";
 import Logo from "../components/Logo.vue";
+import axios from "axios";
 
 const showMobileMenu = ref(false);
 const isRegistering = ref(false);

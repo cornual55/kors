@@ -5,7 +5,7 @@
       <input v-model="name" type="text" placeholder="Имя пользователя" />
       <input v-model="password" type="text" placeholder="Пароль" />
       <input
-        v-model="confirm_password"
+        v-model="password_confirm"
         type="text"
         placeholder="Подтвердите пароль"
       />
@@ -21,12 +21,12 @@ import { ref } from "vue";
 // const props = defineProps(["name", "password", "confirm_password"]);
 const name = ref("");
 const password = ref("");
-const confirm_password = ref("");
+const password_confirm = ref("");
 const emit = defineEmits(["signup"]);
 const store = useUserStore();
 
 const signUp = () => {
-  store.signUp(name, password);
+  store.signUp(name.value, password.value, password_confirm.value);
   emit("signup");
 };
 </script>

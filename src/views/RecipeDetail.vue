@@ -1,16 +1,26 @@
 <template>
   <div class="container px-11">
-    <h1 class="text-lg font-bold">{{ recipe.title }}</h1>
-    <p>
-      <span class="font-semibold">Используемые продукты: </span>
+    <h1 class="text-3xl font-bold">{{ recipe.title }}</h1>
+    <div class="mt-3">
+      <h2 class="font-semibold text-lg">Используемые продукты:</h2>
       <a
         class="cursor-pointer"
         v-for="product in products"
         @click="this.$router.push('/products/' + product.id)"
         >{{ product.name }},
       </a>
-    </p>
-    <div>{{ recipe.content }}</div>
+    </div>
+    <p class="mt-3">{{ recipe.content }}</p>
+    <div class="grid grid-cols-2">
+      <div>Шаги рецепта:</div>
+      <div class="text-right">
+        Советы:
+        <ul>
+          <li>Вы можете обоссать бомжа</li>
+          <li>И не одного</li>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 

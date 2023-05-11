@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import Navbar from "./components/Navbar.vue";
+import Navbar from "@/components/Navbar.vue";
 import { useUserStore } from "./stores/UserStore";
 import { storeToRefs } from "pinia";
 
@@ -49,6 +49,13 @@ export default {
     const { user } = storeToRefs(useUserStore());
     return { user };
   },
+    setup() {
+        const {user} = storeToRefs(useUserStore())
+
+        if (user.token) {
+
+        }
+    } 
 };
 </script>
 
