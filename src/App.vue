@@ -49,13 +49,6 @@ export default {
     const { user } = storeToRefs(useUserStore());
     return { user };
   },
-    setup() {
-        const {user} = storeToRefs(useUserStore())
-
-        if (user.token) {
-
-        }
-    } 
 };
 </script>
 

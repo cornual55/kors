@@ -1,14 +1,16 @@
 <template>
-  <div class="bg-green/70 hover:scale-105 hover:shadow-2xl transition-all rounded-lg ">
+  <div
+    class="bg-green/70 hover:scale-105 hover:shadow-2xl transition-all rounded-lg relative"
+  >
     <div
       style="
         backface-visibility: hidden;
         -webkit-font-smoothing: subpixel-antialiased;
       "
-      class="card  flex flex-col overflow-y-hidden h-[16rem]"
+      class="card flex flex-col overflow-y-hidden h-[16rem]"
     >
       <h2
-        class="title tracking-wider  text-center transition-all px-3 py-3 text-lg"
+        class="title tracking-wider text-center transition-all px-3 py-3 text-lg"
       >
         {{ title }}
       </h2>
@@ -19,11 +21,36 @@
         </div>
       </div>
     </div>
-    <div class="h-0 right-0 left-0 bottom-0 bg-green/80 text-sm opacity-0 super_card transition-all text-center absolute">
-            В рецепт входит:<br>
+    <!--  <div class="absolute -bottom-5 right-0 left-0 flex justify-center gap-10">
+  <button
+        class="shadow-lg text-xl py-2 px-4 bg-gray-200 rounded-3xl hover:bg-gray-300"
+      >
+        +
+      </button>
+      <button
+        class="shadow-lg text-xl py-2 px-4 bg-gray-200 rounded-3xl hover:bg-gray-300"
+      >
+        /
+      </button> 
+    </div>-->
+
+    <div
+      class="h-0 right-0 bg-green/30 left-0 bottom-0 text-sm opacity-0 super_card transition-all absolute flex justify-center items-center gap-6"
+    > 
+      <button
+        class="shadow-lg text-xl py-2 px-4 bg-gray-100 rounded-3xl hover:bg-gray-300"
+      >
+        /
+      </button>
+      <button
+        class="shadow-lg text-xl py-2 px-4 bg-gray-100 rounded-3xl hover:bg-gray-300"
+      >
+        0
+      </button>
+      <!--В рецепт входит:<br>
             1 помидор<br>
-            2 супер помидор
-        </div>
+            2 супер помидор -->
+    </div>
   </div>
 </template>
 
@@ -43,10 +70,10 @@ export default {
   width: 10px; /* width of the entire scrollbar */
 }
 
-.card:hover + .super_card {
-    opacity: 1;
-    height: 5rem;
-    padding: 0.3rem;
+.card:hover + .super_card, .super_card:hover {
+  opacity: 1;
+  height: 4rem;
+  padding: 0.3rem;
 }
 
 /* .scrollbar::-webkit-scrollbar-track {

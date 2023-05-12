@@ -11,7 +11,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import axios from "axios";
 
-axios.defaults.baseURL = "https://f509-176-48-50-53.ngrok-free.app/api/v1";
+axios.defaults.baseURL = "https://adc3-176-48-50-53.ngrok-free.app/api/v1";
 
 /* import specific icons */
 import {

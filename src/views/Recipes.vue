@@ -98,13 +98,13 @@
           >
             {{ recipe.content }}
 
-            <!-- <div class="mt-2 font-semibold">Для рецепта понадобится:</div>
+            <div class="mt-2 font-semibold">Для рецепта понадобится:</div>
             <table class="mt-3">
               <tr v-for="product in recipe.products">
                 <td class="px-2">{{ product.quantity }}</td>
                 <td class="px-2">{{ product.name }}</td>
               </tr>
-            </table> -->
+            </table>
           </card>
         </div>
       </div>

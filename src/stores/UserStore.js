@@ -4,7 +4,7 @@ import axios from "axios";
 export const useUserStore = defineStore("user", {
   state: () => {
     return {
-      user: "",
+      user: {},
       token: localStorage.getItem("token"),
     };
   },
