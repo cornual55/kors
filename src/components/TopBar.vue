@@ -26,10 +26,7 @@
         :class="{'hidden': !user}"
             style="user-select: none"
         class="shadow-xl max-[452px]:text-center py-2 px-4 bg-gray-100 rounded-2xl hover:bg-gray-200 cursor-pointer transition-all ml-4 inline-block w-fit max-[452px]:w-full"
-        @click="
-          sidebarIsHidden = !sidebarIsHidden;
-          this.$emit('click_create');
-        "
+        @click="createClick"
       >
         Создать
       </div>
@@ -79,6 +76,13 @@ const props = defineProps({
     default: [],
   },
 });
+
+const emit = defineEmits(['click_create'])
+
+const createRecipe = () {
+          sidebarIsHidden = !sidebarIsHidden;
+          emit("click_create")
+}
 
 const store = useUserStore();
 store.fetchCurrentUser();
