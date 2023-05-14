@@ -7,7 +7,7 @@
         v-if="!not_show.includes('filter')"
         @click="
           sidebarIsHidden = !sidebarIsHidden;
-          this.$emit('click_filter');
+          emit('click_filter');
         "
       >
         <svg
@@ -35,7 +35,7 @@
       <div
         style="user-select: none"
         v-if="!not_show.includes('sort')"
-        @click="this.$emit('click_sort')"
+        @click="emit('click_sort')"
         class="shadow-xl py-2 px-4 bg-gray-100 rounded-2xl hover:bg-gray-200 cursor-pointer transition-all inline-block w-fit"
       >
         <svg
@@ -54,7 +54,7 @@
         class="shadow-xl py-2 px-4 bg-gray-100 rounded-2xl hover:bg-gray-200 transition-all ml-4 inline-block w-full sm:w-fit max-[452px]:w-full"
         :value="search"
         v-if="!not_show.includes('search')"
-        @input="this.$emit('update:search', $event.target.value)"
+        @input="emit('update:search', $event.target.value)"
         placeholder="Поиск..."
       />
       <!-- <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M21.172 24l-7.387-7.387c-1.388.874-3.024 1.387-4.785 1.387-4.971 0-9-4.029-9-9s4.029-9 9-9 9 4.029 9 9c0 1.761-.514 3.398-1.387 4.785l7.387 7.387-2.828 2.828zm-12.172-8c3.859 0 7-3.14 7-7s-3.141-7-7-7-7 3.14-7 7 3.141 7 7 7z"/></svg> -->
@@ -80,7 +80,6 @@ const props = defineProps({
 const emit = defineEmits(['click_create'])
 
 const createClick = () => {
-          sidebarIsHidden = !sidebarIsHidden;
           emit("click_create")
 }
 
