@@ -79,7 +79,7 @@ const props = defineProps({
 
 const emit = defineEmits(['click_create'])
 
-const createRecipe = () {
+const createRecipe = () => {
           sidebarIsHidden = !sidebarIsHidden;
           emit("click_create")
 }
