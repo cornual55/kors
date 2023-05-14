@@ -1,45 +1,76 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import jwtDecode from "jwt-decode";
 
 export const useUserStore = defineStore("user", {
   state: () => {
     return {
-      user: {},
-      token: localStorage.getItem("token"),
+      user: "",
+      isLoggedIn: false,
     };
   },
   actions: {
-    async signUp(name, password, password_confirm) {
-      this.user = {};
-      this.user.name = "Анатолий";
-
-      axios
+    async fetchCurrentUser() {
+      const token = `; ${document.cookie}`
+        .split("; access_token=")
+        .pop()
+        .split(";")
+        .shift();
+      if (token !== "") {
+        const decoded = jwtDecode(token);
+        this.user = {};
+        this.user.name = decoded.sub.name;
+        this.user.id = decoded.sub.id;
+        axios.defaults.headers.post["Authorization"] = `Bearer ${token}`;
+        axios.defaults.headers.put["Authorization"] = `Bearer ${token}`;
+        axios.defaults.headers.delete["Authorization"] = `Bearer ${token}`;
+        this.isLoggedIn = true;
+      }
+    },
+    async signUp(name, password) {
+      return axios
         .post("/auth/sign-up", {
           name: name,
           password: password,
-          password_confirm: password_confirm,
+          password_confirm: password,
         })
         .then((res) => {
-          if (!res.data.success) throw new Error("Регистрация не удалась");
-          this.signIn(name, password);
+          if (res.status != 201) throw new Error();
+
           alert("Вы успешно зарегистрировались");
+
+          return true;
         })
-        .catch((e) => console.log(e));
+        .catch((e) => {
+          return { error: "Регистрация не удалась" };
+        });
     },
-    async signIn(name, password) {
-      axios
+    async logIn(name, password) {
+      return axios
         .post("/auth/login", {
           name: name,
           password: password,
         })
         .then((res) => {
-          if (!res.data.success) throw new Error("Не удалось выполнить вход");
-          this.user = name;
-          this.token = res.data.data.access_token;
-          localStorage.setItem("token", res.data.data.access_token);
+          if (res.status != 200) throw new Error("Не удалось выполнить вход");
+          const decoded = jwtDecode(res.data.data.access_token);
+          this.user = {};
+          this.user.name = decoded.sub.name;
+          this.user.id = decoded.sub.id;
+          axios.defaults.headers.post["Authorization"] =
+            "Bearer " + res.data.data.access_token;
+          axios.defaults.headers.delete["Authorization"] =
+            "Bearer " + res.data.data.access_token;
+          axios.defaults.headers.put["Authorization"] =
+            "Bearer " + res.data.data.access_token;
+          console.log(res);
+          document.cookie = `access_token=${res.data.data.access_token}`;
+          document.cookie = `refresh_token=${res.data.data.refresh_token}`;
+          this.isLoggedIn = true;
+          return true;
         })
         .catch((e) => {
-          alert("Ошибка: " + e.response.data);
+          return { error: "Логин или пароль неверны" };
         });
     },
   },

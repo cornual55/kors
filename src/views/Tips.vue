@@ -1,35 +1,34 @@
 <template>
   <div class="container">
-    <div class="flex gap-4">
-      <router-link class="px-4 py-2 " to="/storages"
-        >Места хранения</router-link
-      >
-      <router-link class="px-4 py-2 hover:bg-green rounded-lg" to="/storage-types">Типы</router-link>
+    <div class="ml-auto w-fit">
+      Поиск по:
+      <select class="ml-3 cursor-pointer bg-gray-100 px-5 py-3">
+        <option value="storage">Месту хранения</option>
+        <option value="product">Продукту</option>
+        <option value="tip">Названию совета</option>
+      </select>
     </div>
-    <top-bar v-model:search="store.search" :not_show="['create', 'tip']" @click_sort="store.sorted = !store.sorted" @click_filter="sidebarIsHidden = !sidebarIsHidden" />
+    <top-bar @click_filter="sidebarIsHidden = !sidebarIsHidden" />
+
     <div class="mx-auto w-fit font-bold text-xl" v-if="storages === ''">
       Данные загружаются...
     </div>
-    <div class="flex" v-else>
+    <div class="flex gap-3" v-else>
       <sidebar :is_hidden="sidebarIsHidden">
         <Filters
           @change="
             (filter, isForAdding) =>
-              isForAdding
-                ? store.addFilter(filter)
-                : store.removeFilter(filter)
+              isForAdding ? store.addFilter(filter) : store.removeFilter(filter)
           "
           :options="filter_options"
         />
       </sidebar>
       <!-- Заметка: здесь можно использовать @submit -->
       <div
-        :class="{'rgid-cols-2': !sidebarIsHidden}"
         class="flex-1 grid max-sm:justify-center max-sm:gap-y-5 sm:grid-cols-2 lg:grid-cols-3 sm:gap-3"
       >
-        <add-card-storage @create="store.createStorage" v-if="user" />
         <card
-          v-for="storage in store.SearchedFilteredAndSortedStorages"
+          v-for="storage in filteredStorages"
           :key="storage.id"
           :title="storage.name"
           @delete="store.deleteStorage(storage.id)"
@@ -80,7 +79,7 @@
 import { useStoragesStore } from "../stores/StoragesStore";
 import { useUserStore } from "../stores/UserStore";
 import Card from "../components/Card.vue";
-import AddCardStorage from "../components/AddCardStorage.vue";
+/* import AddCardStorage from "../components/AddCardStorage.vue"; */
 import TopBar from "../components/TopBar.vue";
 import Sidebar from "../components/Sidebar.vue";
 import Filters from "../components/Filters.vue";

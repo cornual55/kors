@@ -11,9 +11,25 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import axios from "axios";
 
-axios.defaults.baseURL = "https://adc3-176-48-50-53.ngrok-free.app/api/v1";
-
+// axios.defaults.headers["Access-Control-Allow-Origin"] = "*"
+axios.defaults.baseURL = "https://muerta.up.railway.app/api/v1";
+// axios.defaults.withCredentials = false;
+// axios.defaults.headers.common['Content-Type'] = 'application/json';
+axios.defaults.withCredentials = true;
+axios.defaults.headers.common["ngrok-skip-browser-warning"] = "123";
 /* import specific icons */
+
+import * as yup from "yup";
+
+yup.setLocale({
+  string: {
+    min: "Минимум ${min} символов",
+  },
+  mixed: {
+    required: "Данное поле обязательно",
+  },
+});
+
 import {
   faPlusSquare,
   faPenToSquare,

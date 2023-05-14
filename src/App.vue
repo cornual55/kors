@@ -31,25 +31,22 @@
   </footer>
 </template>
 
-<script>
+<script setup>
 import Navbar from "@/components/Navbar.vue";
 import { useUserStore } from "./stores/UserStore";
 import { storeToRefs } from "pinia";
+import { onBeforeMount, onMounted, onUpdated, ref } from "vue";
 
-export default {
-  data() {
-    return {
-      showMobileMenu: false,
-    };
-  },
-  components: {
-    Navbar,
-  },
-  setup() {
-    const { user } = storeToRefs(useUserStore());
-    return { user };
-  },
-};
+const showMobileMenu = ref(false);
+const store_user = useUserStore();
+const { user } = storeToRefs(store_user);
+/* onMounted = () => { */
+/*   store_user.fetchCurrentUser(); */
+/* }; */
 </script>
 
-<style></style>
+<style lang="postcss">
+.error {
+  @apply text-red-600 text-sm;
+}
+</style>

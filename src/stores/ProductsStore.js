@@ -1,89 +1,74 @@
 import { defineStore } from "pinia";
-import { useStoragesStore } from "./StoragesStore";
+import axios from "axios";
 
 export const useProductsStore = defineStore("products", {
   state: () => ({
+    product: {},
     products: [],
+    search: "",
   }),
   actions: {
-    fetchProducts() {
-      this.products = [
-        {
-          id: 1,
-          name: "Помидор",
-          date_start: "02.05.2023",
-          date_end: "12.05.2023",
-          quantity: 5,
-          storage: 1,
-          state: "Хорошо",
-        },
-        {
-          id: 2,
-          name: "Супер помидор",
-          date_start: "01.05.2023",
-          date_end: "11.05.2023",
-          quantity: 10,
-          storage: 2,
-          state: "Плохо",
-        },
-        {
-          id: 3,
-          name: "Невероятный помидор",
-          date_start: "01.05.2023",
-          date_end: "5.05.2023",
-          quantity: 14,
-          storage: 1,
-          state: "Просрочен",
-        },
-        {
-          id: 4,
-          name: "Яйцо",
-          date_start: "01.05.2023",
-          date_end: "5.05.2023",
-          quantity: 14,
-          storage: 1,
-          state: "Просрочен",
-        },
-        {
-          id: 5,
-          name: "Лук",
-          date_start: "01.05.2023",
-          date_end: "5.05.2023",
-          quantity: 14,
-          storage: 1,
-          state: "Просрочен",
-        },
-      ];
+    async fetchProducts() {
+      return axios
+        .get("/products")
+        .then((res) => {
+          if (res.status == 200) {
+            this.products = res.data.data.products;
+                        return true
+          }
+        })
+        .catch((e) => console.log(e));
     },
-    fetchStorages() {
-      const storages = useStoragesStore();
-      storages.fetchStorages();
-      this.products.forEach((product) => {
-        product.storage = storages.getStorageById(product.storage)[0];
-      })
-      // this.products = this.products.map(
-      //   (x) => (x.storage = storages.getStorageById(x.storage))
-      // );
+    createProduct({ name }) {
+      axios
+        .post("/products", {
+          name: name,
+        })
+        .then((res) => {
+          if (res.status == 200) {
+            this.fetchProducts();
+            // НЕТ ID this.products.push({ name: name, id:  });
+          } else {
+            alert("Не удалось создать продукт");
+          }
+        });
     },
-    createProduct(product) {
-      this.products.push(product);
-      return true;
+    updateProduct(id) {
+      axios.put("/products/" + id).then((res) => {
+        if (res.status == 200) {
+          this.fetchProducts();
+          alert("Продукт успешно обнавлен");
+        }
+      });
     },
-    deleteProduct(product) {
-      this.products = this.products.filter((pr) => pr.id !== product.id);
-      return true;
+    deleteProduct(id) {
+      axios.delete("/products/" + id).then((res) => {
+        if (res.status == 200) {
+          alert("Продукт успешно удален");
+          this.products = this.products.filter((pr) => pr.id !== id);
+        }
+      });
     },
-    updateProduct(product) {
-      this.products = this.products.map((pr) =>
-        pr.id === product.id ? product : pr
+    async getProductById(id) {
+      let res = await axios.get("products/" + id);
+      if (res.status === 200) {
+        return res.data.data.product;
+      }
+    },
+    async getProductTips(id) {
+      let res = await axios.get(`products/${id}/tips`);
+      if (res.status === 200) {
+        return res.data.data.tips;
+      }
+    },
+    createTip() {},
+  },
+  getters: {
+    SearchedProducts() {
+      let products = [...this.products];
+      return products.filter((x) =>
+        x.name.toLowerCase().includes(this.search.toLocaleLowerCase())
       );
-      return true;
-    },
-    getProductsByStorage(storage_id) {
-      return this.products.filter((product) => product.place === storage_id);
-    },
-    getProductById(id) {
-      return this.products.find((pr) => pr.id == id);
     },
   },
 });

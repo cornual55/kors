@@ -48,28 +48,26 @@
           <router-link to="/" class="px-4 py-2" v-if="!user">
             Главная
           </router-link>
-          <router-link to="/products" class="px-4 py-2" v-if="user">
-            Продукты
+          
+
+          <router-link to="/shelf-lives" class="px-4 py-2" v-if="user">
+            Сроки годности
           </router-link>
           <router-link to="/storages" class="px-4 py-2" v-if="user">
             Места хранения
           </router-link>
           <router-link to="/recipes" class="px-4 py-2"> Рецепты </router-link>
-          <a class="px-4 py-2"> Советы </a>
+          <router-link to="/tips" class="px-4 py-2"> Советы </router-link>
         </div>
       </nav>
       <div
         class="grid min-[320px]:grid-cols-1 sm:grid-cols-2 gap-3 my-5 md:my-0"
         v-if="!user"
       >
-        <my-button @click="isLogging = true">Войти</my-button>
-        <my-dialog v-model:show="isLogging">
-          <log-in-form @signup="isLogging = false"></log-in-form>
-        </my-dialog>
-        <my-button @click="isRegistering = true">Регистрация</my-button>
-        <my-dialog v-model:show="isRegistering">
-          <sign-up-form @signup="isRegistering = false"></sign-up-form>
-        </my-dialog>
+        <my-button @click="this.$router.push('/login')">Войти</my-button>
+        <my-button @click="this.$router.push('/sign-up')"
+          >Регистрация</my-button
+        >
         <!-- <a
           class="rounded-xl bg-green py-2 px-6 transition-all cursor-pointer hover:bg-white hover:text-black border-green border-2 text-sm text-center align-middle md:text-base"
         >
@@ -81,12 +79,16 @@
           Регистрация
         </a> -->
       </div>
-      <div class="font-bold" v-else>БОКАНАЧ</div>
+      <div class="font-bold text-sm" v-else>
+        {{ user.name }} 
+
+               <!-- <my-button @click="func_1">check</my-button> -->
+      </div>
     </div>
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref } from "vue";
 import { useUserStore } from "../stores/UserStore";
 import { storeToRefs } from "pinia";
@@ -96,15 +98,24 @@ import Logo from "../components/Logo.vue";
 import axios from "axios";
 
 const showMobileMenu = ref(false);
-const isRegistering = ref(false);
-const isLogging = ref(false);
 
 const store = useUserStore();
 const { user } = storeToRefs(store);
+
+const func_1 = () => {
+  axios
+    .post("/auth/refresh", { withCredentials: true })
+    .then((res) => console.log(res.data));
+};
 </script>
 
 <style type="postcss">
 .router-link-active {
+  background-color: #cde990;
+  @apply rounded-lg;
+}
+
+nav a:hover {
   background-color: #cde990;
   @apply rounded-lg;
 }

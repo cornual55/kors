@@ -10,7 +10,7 @@
       class="card flex flex-col overflow-y-hidden h-[16rem]"
     >
       <h2
-        class="title tracking-wider text-center transition-all px-3 py-3 text-lg"
+        class="title capitalize tracking-wider text-center transition-all px-3 py-3 text-lg"
       >
         {{ title }}
       </h2>
@@ -36,16 +36,24 @@
 
     <div
       class="h-0 right-0 bg-green/30 left-0 bottom-0 text-sm opacity-0 super_card transition-all absolute flex justify-center items-center gap-6"
-    > 
+    >
       <button
-        class="shadow-lg text-xl py-2 px-4 bg-gray-100 rounded-3xl hover:bg-gray-300"
+        class="shadow-lg transition-all text-xl text-gray-600/90 py-2 px-4 bg-gray-100 rounded-2xl hover:bg-gray-300 hover:text-gray-700"
+        @click="this.$emit('edit')"
       >
-        /
+        <font-awesome-icon
+          :icon="['far', 'pen-to-square']"
+          class="transition-all text-2xl"
+        />
       </button>
       <button
-        class="shadow-lg text-xl py-2 px-4 bg-gray-100 rounded-3xl hover:bg-gray-300"
+        class="shadow-lg transition-all text-xl py-2 px-4 bg-gray-100 rounded-2xl hover:bg-gray-300 text-gray-600/90 hover:text-gray-700"
+        @click="this.$emit('delete')"
       >
-        0
+        <font-awesome-icon
+          :icon="['far', 'trash-can']"
+          class=" transition-all text-2xl"
+        />
       </button>
       <!--В рецепт входит:<br>
             1 помидор<br>
@@ -55,9 +63,15 @@
 </template>
 
 <script>
+import { useUserStore } from '../stores/UserStore';
+import { storeToRefs } from 'pinia';
 export default {
   name: "Card",
   props: ["title", "subcaption", "content", "products"],
+    setup() {
+        const {isLoggedIn} = storeToRefs(useUserStore);
+        return {isLoggedIn}
+    }
 };
 </script>
 
@@ -70,7 +84,8 @@ export default {
   width: 10px; /* width of the entire scrollbar */
 }
 
-.card:hover + .super_card, .super_card:hover {
+.card:hover + .super_card,
+.super_card:hover {
   opacity: 1;
   height: 4rem;
   padding: 0.3rem;
