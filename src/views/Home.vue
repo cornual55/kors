@@ -11,6 +11,7 @@
       </h1>
       <div class="mt-12 self-center">
         <div
+                    @click="this.$router.push(/sign-up)"
           class="rounded-xl bg-[#ffd4d4] py-4 px-6 transition-all cursor-pointer hover:bg-white border-pink-[#ffd4d4] border-2 text-sm text-center align-middle md:text-base max-w-sm mx-auto"
         >
           Регистрация
@@ -22,7 +23,7 @@
             Регистрация
           </div> -->
         <a
-          href="#"
+          @click="this.$router.push('/login')"
           class="underline block w-fit mx-auto mt-4 hover:text-pink-400"
           >Войти</a
         >

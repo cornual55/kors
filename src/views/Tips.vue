@@ -9,11 +9,11 @@
       </select>
     </div>
     <top-bar @click_filter="sidebarIsHidden = !sidebarIsHidden" />
-
-    <div class="mx-auto w-fit font-bold text-xl" v-if="storages === ''">
+    СТРАНИЦА НАХОДИТСЯ В РАЗРАБОТКЕ
+    <div class="hidden mx-auto w-fit font-bold text-xl" v-if="storages === ''">
       Данные загружаются...
     </div>
-    <div class="flex gap-3" v-else>
+    <div class="hidden flex gap-3" v-else>
       <sidebar :is_hidden="sidebarIsHidden">
         <Filters
           @change="

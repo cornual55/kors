@@ -92,7 +92,7 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory("/kors/"),
+  history: createWebHistory(process.env.BASE_URL),
   routes,
 });
 
