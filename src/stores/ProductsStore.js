@@ -14,7 +14,7 @@ export const useProductsStore = defineStore("products", {
         .then((res) => {
           if (res.status == 200) {
             this.products = res.data.data.products;
-                        return true
+            return true;
           }
         })
         .catch((e) => console.log(e));
@@ -61,7 +61,16 @@ export const useProductsStore = defineStore("products", {
         return res.data.data.tips;
       }
     },
-    createTip() {},
+    async addTip(id, id_tip) {
+      axios
+        .post(`/products/${id}/tips/${id_tip}`)
+        .then((res) => {
+          if (res.status == 200) {
+            this.fetchProducts();
+            return true;
+          }
+        });
+    },
   },
   getters: {
     SearchedProducts() {

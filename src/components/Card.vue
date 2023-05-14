@@ -35,6 +35,7 @@
     </div>-->
 
     <div
+      :class="{'hidden': !isLoggedIn}"
       class="h-0 right-0 bg-green/30 left-0 bottom-0 text-sm opacity-0 super_card transition-all absolute flex justify-center items-center gap-6"
     >
       <button
@@ -69,7 +70,10 @@ export default {
   name: "Card",
   props: ["title", "subcaption", "content", "products"],
     setup() {
-        const {isLoggedIn} = storeToRefs(useUserStore);
+        const store = useUserStore();
+        store.fetchCurrentUser();
+        const {isLoggedIn} = storeToRefs(store);
+
         return {isLoggedIn}
     }
 };

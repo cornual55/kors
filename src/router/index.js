@@ -41,6 +41,9 @@ const routes = [
     path: "/products/:id",
     name: "Product",
     component: ProductDetail,
+  meta: {
+      requiresAuth: true,
+    },
   },
   {
     path: "/storages",
@@ -92,7 +95,7 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory("/kors/"),
   routes,
 });
 

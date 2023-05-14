@@ -5,29 +5,29 @@
       <my-button @click="isAdding = !isAdding"
         >Добавить срок годности</my-button
       >-->
-      <router-link class="px-4 py-2" to="/shelf-lives">Сроки годности</router-link>
-      <router-link class="px-4 py-2 hover:bg-green rounded-lg" to="/products">Продукты</router-link>
+      <router-link class="px-4 py-2" to="/shelf-lives"
+        >Сроки годности</router-link
+      >
+      <router-link class="px-4 py-2 hover:bg-green rounded-lg" to="/products"
+        >Продукты</router-link
+      >
     </div>
     <my-dialog v-model:show="isAdding">
-      <shelf-form @create="this.store.createShelf"
-        >Добавление срока годности</shelf-form
-      >
+      <shelf-form @create="createShelf">Добавление срока годности</shelf-form>
       <shelf-form-create />
     </my-dialog>
     <my-dialog v-model:show="isChanging"
       ><shelf-form
         :shelf_life="current_shelf"
-        @create="
-          this.store.updateShelf;
-          isChanging = !isChanging;
+        @create="updateShelf
         "
         >Изменение срока годности</shelf-form
       ></my-dialog
     >
-    <top-bar :not_show="['sort', 'tip']" @click_create='isAdding = !isAdding' />
+    <top-bar :not_show="['sort', 'tip', 'filter', 'search']" @click_create="isAdding = !isAdding" />
     <div class="mt-5 flex">
       <!-- <sidebar class="flex-1" /> -->
-      <table class="flex-1 rounded-xl overflow-hidden">
+      <table class="flex-1 rounde-xl overflow-hidden">
         <!-- <caption>
           Продукты
         </caption> -->
@@ -79,7 +79,7 @@
           </td>
           <td style="text-align: center !important">
             <font-awesome-icon
-              @click="store.deleteProduct(product)"
+              @click="store.deleteShelf(shelf_life.id)"
               :icon="['far', 'trash-can']"
               class="text-gray-700/70 transition-all text-2xl cursor-pointer hover:text-gray-700"
             />
@@ -120,6 +120,14 @@ export default {
     changeProduct(product) {
       this.isChanging = false;
       this.store.updateProduct(product);
+    },
+    createShelf(shelf) {
+      this.store.createShelf(shelf);
+      this.isAdding = false;
+    },
+    updateShelf(shelf) {
+      this.store.updateShelf(shelf);
+      this.isChanging = false;
     },
   },
   setup() {

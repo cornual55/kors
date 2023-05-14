@@ -45,7 +45,7 @@
         <my-dialog v-model:show="isChanging">
           <form
             class="space-y-4 flex flex-col [&>input]:p-4 mt-5 [&>select]:p-4 mt-5"
-            @submit.prevent
+            @submit.prevent='updateStorage'
           >
             <div>Название</div>
             <input
@@ -55,7 +55,7 @@
             />
             <div>Тип</div>
             <select v-model="current_storage.id_type">
-              <option value="" disabled>{{ current_storage.type }}</option>
+              <option value="current_storage." disabled>{{ current_storage.type }}</option>
               <option
                 v-for="storage_type in storage_types"
                 :key="storage_type.id"
@@ -68,7 +68,7 @@
             <input type="text" v-model.number="current_storage.temperature" />
             <div>Влажность (%)</div>
             <input type="text" v-model.number="current_storage.humidity" />
-            <my-button @click="updateStorage">Изменить</my-button>
+            <my-button>Изменить</my-button>
           </form>
         </my-dialog>
       </div>
@@ -95,10 +95,10 @@ const sidebarIsHidden = ref(true);
 const { storages, storage_types, filteredStorages } = storeToRefs(store);
 
 const updateStorage = () => {
-  let isSuccess = true;
-  if (isSuccess) {
+  store.updateStorage(current_storage.value)
+
     isChanging.value = false;
-  }
+
 };
 
 const filter_options = ref([
@@ -110,7 +110,7 @@ onMounted(async () => {
   await store.fetchStorageTypes();
 
   storage_types.value.forEach((storage_type) => {
-    console.log(storage_type);
+    /* console.log(storage_type); */
     filter_options.value[0].values.push({
       id: storage_type.id,
       name: storage_type.name,

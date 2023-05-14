@@ -49,26 +49,24 @@ export const useShelfLivesStore = defineStore("shelf_lives", {
         })
         .then((res) => {
           if (res.status == 200) {
+            this.fetchShelfs();
+            this.fetchStorages();
             alert("Срок годности успешно создан");
           } else {
             alert("Не удалось создать срок годности");
           }
         })
-        .catch((e) => alert("Ошибка: данные введены неверно"));
+        .catch((e) => console.log(e));
     },
     deleteShelf(id) {
-      axios
-        .delete(`/users/${user.value.id}/shelf-lives/`, {
-          id_shelf_life: id,
-        })
-        .then((res) => {
-          if (res.status == 200) {
-            this.shelf_lives = this.shelf_lives.filter((sh) => sh.id !== id);
-            alert("Срок годности успешно удален");
-            this.fetchShelfs();
-            this.fetchStorages();
-          }
-        });
+      axios.delete(`/shelf-lives/${id}`).then((res) => {
+        if (res.status == 200) {
+          this.shelf_lives = this.shelf_lives.filter((sh) => sh.id !== id);
+          alert("Срок годности успешно удален");
+          this.fetchShelfs();
+          this.fetchStorages();
+        }
+      });
     },
     updateShelf({
       id,
@@ -79,11 +77,8 @@ export const useShelfLivesStore = defineStore("shelf_lives", {
       purchase_date,
       end_date,
     }) {
-      const store_user = useUserStore();
-      const { user } = storeToRefs(store_user);
       axios
-        .put(`/users/${user.value.id}/shelf-lives`, {
-          id_shelf_life: id,
+        .put(`/shelf-lives/${id}`, {
           id_product: id_product,
           id_storage: id_storage,
           id_measure: id_measure,
@@ -95,10 +90,12 @@ export const useShelfLivesStore = defineStore("shelf_lives", {
           if (res.status == 200) {
             alert("Срок годности успешно изменен");
             this.fetchShelfs();
-            this.fetchStorages();
           }
         })
-        .catch((e) => alert("Не удалось изменить срок годности"));
+        .catch((e) => {
+          console.log(e);
+          alert("Не удалось изменить срок годности");
+        });
     },
   },
 });

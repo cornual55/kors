@@ -13,10 +13,10 @@ import axios from "axios";
 
 // axios.defaults.headers["Access-Control-Allow-Origin"] = "*"
 axios.defaults.baseURL = "https://muerta.up.railway.app/api/v1";
-// axios.defaults.withCredentials = false;
+// axios.defaults.withCredentials = true;
 // axios.defaults.headers.common['Content-Type'] = 'application/json';
 axios.defaults.withCredentials = true;
-axios.defaults.headers.common["ngrok-skip-browser-warning"] = "123";
+// axios.defaults.headers.common["ngrok-skip-browser-warning"] = "123";
 /* import specific icons */
 
 import * as yup from "yup";

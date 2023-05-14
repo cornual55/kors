@@ -82,12 +82,12 @@ export const useStoragesStore = defineStore("storages", {
         .then((res) => {
           if (res.status === 200) {
             isSuccess = true;
-            this.storages.forEach((st) => {
-              if (st.id == id) {
-                console.log("YES YES YES");
-                st = { id, name, id_type, temperature, humidity };
-              }
-            });
+            // this.storages.forEach((st) => {
+            //   if (st.id == id) {
+            //     st = { id, name, id_type, temperature, humidity };
+            //   }
+            // });
+            this.fetchStorages();
             alert("Место хранения успешно изменено");
           } else {
             throw new Error("");
@@ -105,7 +105,6 @@ export const useStoragesStore = defineStore("storages", {
       });
     },
     createStorageType(name) {
-      console.log("DDADADA");
       axios
         .post("/storages-types/", {
           name: name,

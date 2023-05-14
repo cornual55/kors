@@ -18,25 +18,37 @@
         />
       </sidebar>
       <my-dialog v-model:show="isAdding">
-        <Form class="flex flex-col gap-6 [&>input]:p-4 [&>select]:p-4  mt-5" @submit="createRecipe">
+        <Form
+          class="flex flex-col gap-6 [&>input]:p-4 [&>select]:p-4 mt-5"
+          @submit="createRecipe"
+        >
           <Field name="name" type="text" placeholder="Название" />
-          <Field name="description" type="text" placeholder="Описание" />
-          <Field name="steps" as="select">
+          <Field
+            name="description"
+            as="textarea"
+            type="text"
+            placeholder="Описание"
+          />
+          <!-- <Field name="steps" as="select">
             <option disabled value="">Шаги</option>
             <option v-for="step in steps" :key="step.id" :value="step.id">
               {{ step.name }}
             </option>
-          </Field>
-          <Field name="ingredients" as="select">
-            <option disabled value="">Продукты</option>
-            <option
-              v-for="product in products"
-              :key="product.id"
-              :value="product.id"
-            >
-              {{ product.name }}
-            </option>
-          </Field>
+          </Field> -->
+
+          <CompleteAuto
+            v-model="form_steps"
+            placeholder="Шаги..."
+            :order="true"
+            :items="steps"
+          ></CompleteAuto>
+          <CompleteAuto
+            :numeric="true"
+            v-model="form_products"
+            placeholder="Продукты..."
+            :items="products"
+          ></CompleteAuto>
+
           <my-button>Создать</my-button>
         </Form>
       </my-dialog>
@@ -48,7 +60,6 @@
             v-for="recipe in store.SearchedSortedFilteredAndLimitedRecipes"
             :title="recipe.name"
             :key="recipe.id"
-            @click="this.$router.push('/recipes/' + recipe.id)"
           >
             {{ recipe.description }}
           </card>
@@ -71,11 +82,13 @@ import { storeToRefs } from "pinia";
 import Card from "../components/Card.vue";
 import { useRecipesStore } from "../stores/RecipesStore";
 import { useProductsStore } from "../stores/ProductsStore";
+import { useUserStore } from "../stores/UserStore";
 import TopBar from "../components/TopBar.vue";
 import Sidebar from "../components/Sidebar.vue";
 import Filters from "../components/Filters.vue";
 import Pagination from "../components/Pagination.vue";
 import { Form, Field, ErrorMessage } from "vee-validate";
+import CompleteAuto from "../components/CompleteAuto.vue";
 
 export default {
   data() {
@@ -84,6 +97,8 @@ export default {
       sidebarIsHidden: true,
       total_pages: "",
       isAdding: false,
+      form_products: [],
+      form_steps: [],
     };
   },
   components: {
@@ -95,6 +110,7 @@ export default {
     Form,
     Field,
     ErrorMessage,
+    CompleteAuto,
   },
   methods: {
     changeSort() {
@@ -104,9 +120,21 @@ export default {
         this.store.sorted = "+";
       }
     },
-    createRecipe(values) {
-      this.store.createRecipe(values);
+    createRecipe(values, { resetForm }) {
+      this.form_products.forEach((pr) => {
+        pr.id_product = pr.id;
+        pr.id_measure = 1;
+      });
+      this.store.createRecipe({
+        ...values,
+        steps: this.form_steps,
+        ingredients: this.form_products,
+        id_user: this.user.id,
+      });
       this.isAdding = false;
+      resetForm();
+      this.form_steps = [];
+      this.form_products = [];
     },
   },
   mounted() {
@@ -115,6 +143,7 @@ export default {
   setup() {
     const store = useRecipesStore();
     const store_products = useProductsStore();
+    const { user } = storeToRefs(useUserStore());
 
     const { recipes, steps } = storeToRefs(store);
     const { products } = storeToRefs(store_products);
@@ -131,7 +160,7 @@ export default {
       })
     );
 
-    return { recipes, store, filter_options, steps, products };
+    return { recipes, store, filter_options, steps, products, user };
   },
 };
 </script>

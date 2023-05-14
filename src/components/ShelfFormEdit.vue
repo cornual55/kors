@@ -137,11 +137,11 @@ export default {
     return { measures, storages, products };
   },
   updated() {
-    if (this.shelf_life.purchase_date !== undefined) {
-      this.purchase_date = ref(new Date(this.shelf_life.purchase_date));
-      this.end_date = new Date(this.shelf_life.end_date);
-      delete this.shelf_life.purchase_date
-      delete this.shelf_life.end_date
+    if (this.shelf_life.purchase_date !== null) {
+      let t_purchase_date = new Date(this.shelf_life.purchase_date);
+      let t_end_date = new Date(this.shelf_life.end_date);
+            this.purchase_date = t_purchase_date.toISOString()
+            this.end_date = t_end_date.toISOString()
     }
   },
 };

@@ -23,7 +23,8 @@
       </div>
       <div
         v-if="!not_show.includes('create')"
-        style="user-select: none"
+        :class="{'hidden': !user}"
+            style="user-select: none"
         class="shadow-xl max-[452px]:text-center py-2 px-4 bg-gray-100 rounded-2xl hover:bg-gray-200 cursor-pointer transition-all ml-4 inline-block w-fit max-[452px]:w-full"
         @click="
           sidebarIsHidden = !sidebarIsHidden;
@@ -64,21 +65,24 @@
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      sidebarIsHidden: true,
-    };
+<script setup>
+import { useUserStore } from "../stores/UserStore";
+import { storeToRefs } from "pinia";
+import { ref } from "vue";
+
+const sidebarIsHidden = ref(true);
+
+const props = defineProps({
+  search: String,
+  not_show: {
+    type: Array,
+    default: [],
   },
-  props: {
-    search: String,
-    not_show: {
-      type: Array,
-      default: [],
-    },
-  },
-};
+});
+
+const store = useUserStore();
+store.fetchCurrentUser();
+const { user } = storeToRefs(store);
 </script>
 
 <style></style>

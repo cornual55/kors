@@ -13,11 +13,11 @@
       @click_create="isAdding = !isAdding"
     />
     <my-dialog v-model:show="isAdding">
-      <Form @submit="store.createProduct; isAdding = false" class="flex [&>*]:p-4 flex-col gap-4">
+      <Form @submit="(values) => {store.createProduct(values); isAdding = false}" class="flex [&>*]:p-4 flex-col gap-4">
         <Field name="name" type="text" placeholder="Название продукта" />
-        <Field name="category" as="select">
+       <!-- <Field name="category" as="select">
           <option value="Категория продукта" disabled></option>
-        </Field>
+        </Field> -->
         <my-button>Создать </my-button>
       </Form>
     </my-dialog>
@@ -25,8 +25,8 @@
       <!-- <sidebar class="flex-1" /> -->
       <div class="flex-1 bg-gray-100 p-8 rounded-xl overflow-hidden">
         <h1 class="text-xl font-bold">Продукты</h1>
-        <div class="mt-3 rounded-lg p-4 bg-gray-200/90 hover:bg-gray-300/70 transition-all flex justify-between" v-for="product in store.SearchedProducts">
-          <div class="hover:underline cursor-pointer" @click="this.$router.push('/products/' + product.id)">{{ product.name }}</div>
+        <div  @click="this.$router.push('/products/' + product.id)" class="mt-3 rounded-lg p-4 bg-gray-200/90 hover:bg-gray-300/70 transition-all flex justify-between" v-for="product in store.SearchedProducts">
+          <div class="hover:underline cursor-pointer">{{ product.name }}</div>
           <font-awesome-icon
             @click="store.deleteProduct(product.id)"
             :icon="['far', 'trash-can']"

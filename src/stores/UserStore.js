@@ -64,14 +64,18 @@ export const useUserStore = defineStore("user", {
           axios.defaults.headers.put["Authorization"] =
             "Bearer " + res.data.data.access_token;
           console.log(res);
-          document.cookie = `access_token=${res.data.data.access_token}`;
-          document.cookie = `refresh_token=${res.data.data.refresh_token}`;
+          document.cookie = `access_token=${res.data.data.access_token}; max-age=900; path=/;`;
+          // document.cookie = `refresh_token=${res.data.data.refresh_token}`;
           this.isLoggedIn = true;
           return true;
         })
         .catch((e) => {
           return { error: "Логин или пароль неверны" };
         });
+    },
+    async logout() {
+      document.cookie = "access_token=; max-age=-1; path=/;";
+      this.user = "";
     },
   },
 });
