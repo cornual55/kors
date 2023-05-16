@@ -1,30 +1,36 @@
+
 <template>
   <div class="container">
     <div class="flex gap-4">
-      <router-link class="px-4 py-2 hover:bg-green rounded-lg" to="/storages"
-        >Места хранения</router-link
-      >
-      <router-link class="px-4 py-2" to="/storage-types">Типы</router-link>
+      <router-link class="px-4 py-2  hover:bg-green rounded-lg" to="/recipes">Рецепты</router-link>
+      <router-link
+        class="px-4 py-2"
+        to="/steps"
+        >Шаги</router-link>
     </div>
     <top-bar
       class="-ml-4"
-      :not_show="['sort', 'search', 'filter']"
+      :not_show="['sort', 'filter', 'search']"
+      v-model:search="store.search"
       @click_create="isAdding = !isAdding"
     />
     <my-dialog v-model:show="isAdding">
-      <Form @submit="func_1" class="flex [&>*]:p-4 flex-col gap-4">
-        <Field name="name" type="text" placeholder="Название" />
+      <Form @submit="(values) => {store.createStep(values); isAdding = false}" class="flex [&>*]:p-4 flex-col gap-4">
+        <Field name="name" type="text" placeholder="Название продукта" />
+       <!-- <Field name="category" as="select">
+          <option value="Категория продукта" disabled></option>
+        </Field> -->
         <my-button>Создать </my-button>
       </Form>
     </my-dialog>
     <div class="mt-5 flex">
       <!-- <sidebar class="flex-1" /> -->
       <div class="flex-1 bg-gray-100 p-8 rounded-xl overflow-hidden">
-        <h1 class="text-xl font-bold">Типы места хранения</h1>
-        <div class="mt-3 rounded-lg p-4 bg-gray-200/90 hover:bg-gray-300/70 transition-all flex justify-between" v-for="storage_type in storage_types">
-          <div>{{ storage_type.name }}</div>
+        <h1 class="text-xl font-bold">Шаги</h1>
+        <div class="mt-3 rounded-lg p-4 bg-gray-200/90 hover:bg-gray-300/70 transition-all flex justify-between" v-for="step in store.steps">
+          <div >{{ step.name }}</div>
           <font-awesome-icon
-            @click="store.deleteStorageType(storage_type.id)"
+            @click="store.deleteProduct(product.id)"
             :icon="['far', 'trash-can']"
             class="text-gray-700/70 transition-all text-2xl cursor-pointer hover:text-gray-700"
           />
@@ -36,23 +42,17 @@
 
 <script setup>
 import TopBar from "../components/TopBar.vue";
-import { useStoragesStore } from "../stores/StoragesStore";
+import { useRecipesStore } from "../stores/RecipesStore";
 import { storeToRefs } from "pinia";
 import { onMounted, ref } from "vue";
 import { Form, Field } from "vee-validate";
+import { useRouter } from 'vue-router'
 
+const router = useRouter();
 const isAdding = ref(false);
-const store = useStoragesStore();
-store.fetchStorageTypes();
-
-const { storage_types } = storeToRefs(store);
-
-const func_1 = ({name}) => {
-    store.createStorageType(name);
-    isAdding.value = true
-}
-
-
+const store = useRecipesStore();
+const {steps} = storeToRefs(store)
+store.fetchSteps();
 </script>
 
 <style lang="postcss" scoped>

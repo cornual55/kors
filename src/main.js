@@ -17,7 +17,6 @@ axios.defaults.baseURL = "https://muerta.up.railway.app/api/v1";
 // axios.defaults.headers.common['Content-Type'] = 'application/json';
 axios.defaults.withCredentials = true;
 // axios.defaults.headers.common["ngrok-skip-browser-warning"] = "123";
-/* import specific icons */
 
 import * as yup from "yup";
 
@@ -27,6 +26,9 @@ yup.setLocale({
   },
   mixed: {
     required: "Данное поле обязательно",
+  },
+  number: {
+    moreThan: "Число должно быть больше ${moreThan}",
   },
 });
 

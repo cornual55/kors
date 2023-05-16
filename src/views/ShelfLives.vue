@@ -42,7 +42,7 @@
           <th>Удалить</th>
         </tr>
         <tr v-for="shelf_life in shelf_lives" :key="shelf_life.id">
-          <td>{{ shelf_life.product.name }}</td>
+          <td class="hover:underline cursor-pointer" @click="this.$router.push('/products/'+shelf_life.product.id)">{{ shelf_life.product.name }}</td>
           <td>{{ shelf_life.quantity }} {{ shelf_life.measure.name }}</td>
           <td>{{ shelf_life.storage.name }}</td>
           <td>
@@ -63,7 +63,9 @@
               })
             }}
           </td>
-          <td>тут должно быть состояние</td>
+          <td v-if="shelf_life.purchase_date >= shelf_life.end_date">Подошел к концу</td>
+          <td v-else-if="Math.floor((shelf_life.purchase_date - shelf_life.end_date) / (1000 * 60 * 60 * 24)) < 3">Подходит к концу</td>
+          <td>Годен</td>
           <td style="text-align: center !important">
             <font-awesome-icon
               @click="

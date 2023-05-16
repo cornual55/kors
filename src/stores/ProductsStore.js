@@ -10,7 +10,7 @@ export const useProductsStore = defineStore("products", {
   actions: {
     async fetchProducts() {
       return axios
-        .get("/products")
+        .get("/products/?limit=30")
         .then((res) => {
           if (res.status == 200) {
             this.products = res.data.data.products;

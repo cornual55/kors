@@ -25,7 +25,7 @@
       <!-- <sidebar class="flex-1" /> -->
       <div class="flex-1 bg-gray-100 p-8 rounded-xl overflow-hidden">
         <h1 class="text-xl font-bold">Продукты</h1>
-        <div  @click="this.$router.push('/products/' + product.id)" class="mt-3 rounded-lg p-4 bg-gray-200/90 hover:bg-gray-300/70 transition-all flex justify-between" v-for="product in store.SearchedProducts">
+        <div  @click="router.push('/products/' + product.id)" class="mt-3 rounded-lg p-4 bg-gray-200/90 hover:bg-gray-300/70 transition-all flex justify-between" v-for="product in store.SearchedProducts">
           <div class="hover:underline cursor-pointer">{{ product.name }}</div>
           <font-awesome-icon
             @click="store.deleteProduct(product.id)"
@@ -44,7 +44,9 @@ import { useProductsStore } from "../stores/ProductsStore";
 import { storeToRefs } from "pinia";
 import { onMounted, ref } from "vue";
 import { Form, Field } from "vee-validate";
+import { useRouter } from 'vue-router'
 
+const router = useRouter();
 const isAdding = ref(false);
 const store = useProductsStore();
 const { products } = storeToRefs(store);

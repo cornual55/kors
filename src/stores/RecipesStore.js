@@ -4,59 +4,28 @@ import axios from "axios";
 
 export const useRecipesStore = defineStore("recipes", {
   state: () => ({
-    recipes: [],
+    recipes: "",
     steps: [],
     limit: 5,
     page: 1,
+    steps: [],
     filters: [],
     search: "",
     sorted: "",
   }),
   actions: {
     async fetchRecipes() {
-      const res = await axios.get("/recipes");
+      const res = await axios.get("/recipes/?limit=30");
 
       if ((res.status = 200)) {
         this.recipes = res.data.data.recipes;
         return true;
       }
-      alert("Не удалось загрузить рецепты");
       return false;
-      // this.recipes.push({
-      //   id: 50,
-      //   title: "Бобер",
-      //   storage: "холодильник",
-      //   products: [
-      //     { id: 4, quantity: 2 },
-      //     { id: 5, quantity: 1 },
-      //   ],
-      //   content: "lorem",
-      // });
-      // for (var i = 1; i < 6; i++) {
-      //   this.recipes.push({
-      //     id: i,
-      //     title: "Шаурма",
-      //     products: [
-      //       { id: 2, quantity: 3 },
-      //       { id: 1, quantity: 2 },
-      //       { id: 5, quantity: 1 },
-      //     ],
-      //     content:
-      //       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed lectus orci, iaculis vel blandit sed, euismod sed augue. Proin posuere turpis nisi, ac varius ipsum elementum in.",
-      //     storage: "комод",
-      //   });
-      // }
     },
-    async fetchProducts() {
-      const products = useProductsStore();
-      this.recipes.forEach((recipe) => {
-        recipe.products.forEach((product) => {
-          product["name"] = products.getProductById(product.id).name;
-        });
-      });
-    },
+
     async fetchSteps() {
-      axios.get("/steps").then((res) => {
+      axios.get("/steps/?limit=30").then((res) => {
         if (res.status == 200) {
           this.steps = res.data.data.steps;
         }
@@ -102,16 +71,19 @@ export const useRecipesStore = defineStore("recipes", {
       return false;
     },
     async getRecipeIngredients(recipe) {
-      const res = axios.get(`/recipes/${1}/ingredients`);
+      const res = await axios.get(`/recipes/${recipe.id}/ingredients`);
       if (res.status == 200) {
-        recipe.products = res.data.data.ingredients;
+        return res.data.data.ingredients;
       }
     },
-    async deleteProduct({ id, id_product }) {
-      const res = await axios.delete(`recipes/${id}`, {
-        id_product: id_product,
-      });
-
+    async getRecipeSteps(recipe) {
+      const res = await axios.get(`/recipes/${recipe.id}/steps`);
+      if (res.status == 200) {
+        return res.data.data.steps;
+      }
+    },
+    async deleteRecipe(id) {
+      const res = await axios.delete(`/recipes/${id}`);
       if (res.status === 200) {
         this.fetchRecipes();
         return true;
@@ -120,6 +92,41 @@ export const useRecipesStore = defineStore("recipes", {
       alert("Не удалось удалить рецепт");
       return false;
     },
+        async updateRecipe(recipe) {
+            axios.put("/recipes/${recipe.id}", {
+                ...recipe
+            }).then(res => {
+                    if (res.status === 200) {
+                        alert("Рецепт успешно удален");
+                        this.fetchRecipes();
+                    }
+                })
+        },
+        async createStep({name}) {
+            axios.post('/steps', {
+                name: name
+            }).then(res => {
+                    if (res.status === 200) {
+                        alert('шаг успешно создан')
+                        this.fetchSteps();
+                    }
+                })
+        },
+        async deleteStep(id) {
+            axios.delete(`/steps/${id}}`)
+                .then(res => {
+                    if (res.status === 200) {
+                        alert("успешно удалено")
+                        this.fetchSteps();
+                    }
+                })
+        },
+        async fetchSteps() {
+            axios.get("/steps/?limit=30")
+                .then(res => {
+                    this.steps = res.data.data.steps
+                })
+        }
   },
   getters: {
     LimitedRecipes() {
@@ -138,7 +145,7 @@ export const useRecipesStore = defineStore("recipes", {
           recipes.forEach((recipe) => {
             this.getRecipeIngredients(recipe);
           });
-          recipes = recipes.filter((x) => x.find((y) => y.id == filter.value));
+          recipes = recipes.filter((x) => x.find((y) => y.ingredients.includes(filter.value)));
         }
       });
       return recipes;

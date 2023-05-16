@@ -1,6 +1,6 @@
 <template>
   <div class="container flex flex-wrap justify-between items-center">
-    <div class="flex items-end gap-3 -mt-3">
+    <div @click="router.push('/shelf-lives')" class="flex cursor-pointer items-end gap-3 -mt-3">
       <logo class="inline w-[3.2rem] h-auto" />
       <h2 class="text-lg tracking-wider leading-5 inline">
         Срок <br />годности
@@ -57,7 +57,7 @@
             Места хранения
           </router-link>
           <router-link to="/recipes" class="px-4 py-2"> Рецепты </router-link>
-          <router-link to="/tips" class="px-4 py-2"> Советы </router-link>
+          <router-link v-show="false" to="/tips" class="px-4 py-2"> Советы </router-link>
         </div>
       </nav>
       <div

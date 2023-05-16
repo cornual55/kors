@@ -10,34 +10,41 @@
       @click="isAdding = !isAdding"
       :class="{ hidden: isAdding }"
     />
-    <form @submit.prevent>
+    <Form
+      @invalid-submit="onInvalidSubmit"
+      :validation-schema="schema"
+      @submit="submitStorage"
+    >
       <div
         class="bg-green flex flex-col h-[16rem] rounded-lg"
         :class="{ 'blur-sm': !isAdding }"
       >
-        <input
+        <Field
           type="text"
           placeholder="Название"
           class="p-3 capitalize text-lg bg-inherit placeholder:text-gray-600 rounded-t-lg focus-visible:outline-none"
-          v-model="name"
+          name="name"
         />
         <div class="bg-gray-100 p-5 rounded-b-lg flex-1 relative">
           Температура -
-          <input
+          <Field
             type="text"
-            v-model.number="temperature"
+            maxlength="2"
+            @keypress="isNumber"
+            name="temperature"
             class="bg-inherit inline w-11"
           />°C <br />Влажность -
-          <input
+          <Field
             type="text"
-            v-model.number="humidity"
+
+            maxlength="2"
+            name="humidity"
+            @keypress="isNumber"
             class="bg-inherit mt-1 inline w-11"
           />
           %
-          <my-button class="absolute bottom-3 right-3" @click="submitStorage"
-            >Создать</my-button
-          >
-          <select class="p-3 mt-1" v-model="type">
+          <my-button class="absolute bottom-3 right-3">Создать</my-button>
+          <Field as="select" class="p-3 mt-1" name="type">
             <option value="" disabled selected>Тип места хранения</option>
             <option
               v-for="storage_type in storage_types"
@@ -46,41 +53,75 @@
             >
               {{ storage_type.name }}
             </option>
-          </select>
+          </Field>
+
           <slot></slot>
         </div>
       </div>
-    </form>
+    </Form>
   </div>
 </template>
 
 <script>
 import { useStoragesStore } from "../stores/StoragesStore";
 import { storeToRefs } from "pinia";
+import { Form, Field, ErrorMessage } from "vee-validate";
+import * as yup from "yup";
+
 export default {
   data() {
     return {
       isAdding: false,
-      name: "",
-      temperature: "",
-      humidity: "",
-      type: "",
     };
   },
   methods: {
-    submitStorage() {
+    submitStorage({ name, temperature, humidity, type }, { resetForm }) {
       let storage = {};
-      storage.name = this.name;
-      storage.temperature = this.temperature;
-      storage.humidity = this.humidity;
-      let type = this.type.split(",");
-      storage.id_type = Number(type[0])
-      storage.type = type[1]
+      storage.name = name;
+      storage.temperature = Number(temperature);
+      storage.humidity = Number(humidity);
+      let type_arr = type.split(",");
+      storage.id_type = Number(type_arr[0]);
+      storage.type = type_arr[1];
       this.$emit("create", { ...storage });
-      this.name = "";
-      this.temperature = "";
-      this.humidity = "";
+      resetForm();
+      this.isAdding = false;
     },
+    isNumber(evt) {
+      var charCode = evt.keyCode;
+      if (
+        charCode > 31 &&
+        (charCode < 48 || charCode > 57) &&
+        charCode !== 46
+      ) {
+        evt.preventDefault();
+      }
+      return true;
+    },
+    onInvalidSubmit({ values, errors, results }) {
+      console.log(values);
+      console.log(errors);
+      console.log(results);
+      if (values.temperature == 0) {
+        alert("Температура должна быть больше 0");
+      }
+      if (values.humidity == 0) {
+        alert("Влажность должна быть больше 0");
+      }
+      if (
+        !values.type ||
+        !values.humidity ||
+        !values.temperature ||
+        !values.name
+      ) {
+        alert("Вы не заполнили обязательные поля");
+      }
+    },
+  },
+  components: {
+    Field,
+    Form,
+    ErrorMessage,
   },
   setup() {
     const store = useStoragesStore();
@@ -90,17 +131,14 @@ export default {
       store.fetchStorageTypes();
     }
 
-    return { store, storage_types };
+    const schema = yup.object({
+      name: yup.mixed().required(),
+      temperature: yup.number().positive().required(),
+      humidity: yup.number().positive().required(),
+      type: yup.mixed().required(),
+    });
+
+    return { store, storage_types, schema };
   },
 };
 </script>
-
-<style scoped>
-.scrollbar::-webkit-scrollbar {
-  width: 12px;
-}
-
-.scrollbar {
-  scrollbar-width: thin;
-}
-</style>

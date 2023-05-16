@@ -8,7 +8,7 @@ export const useMeasureStore = defineStore("measures", {
   actions: {
     async fetchMeasures() {
       axios
-        .get("/measures")
+        .get("/measures/?limit=30")
         .then((res) => {
           if (res.status != 200) {
             throw new Error();

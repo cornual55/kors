@@ -12,6 +12,7 @@ import { useUserStore } from "../stores/UserStore";
 import Tips from "../views/Tips.vue";
 import Products from "../views/Products.vue";
 import StorageTypes from "../views/StorageTypes.vue";
+import Steps from "../views/Steps.vue";
 
 const routes = [
   {
@@ -41,7 +42,7 @@ const routes = [
     path: "/products/:id",
     name: "Product",
     component: ProductDetail,
-  meta: {
+    meta: {
       requiresAuth: true,
     },
   },
@@ -88,6 +89,14 @@ const routes = [
     path: "/storage-types",
     component: StorageTypes,
     name: "StorageTypes",
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: "/steps",
+    component: Steps,
+    name: "Steps",
     meta: {
       requiresAuth: true,
     },

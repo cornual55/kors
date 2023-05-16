@@ -18,6 +18,7 @@ export const useUserStore = defineStore("user", {
         .shift();
       if (token !== "") {
         const decoded = jwtDecode(token);
+        console.log(decoded)
         this.user = {};
         this.user.name = decoded.sub.name;
         this.user.id = decoded.sub.id;
@@ -63,7 +64,6 @@ export const useUserStore = defineStore("user", {
             "Bearer " + res.data.data.access_token;
           axios.defaults.headers.put["Authorization"] =
             "Bearer " + res.data.data.access_token;
-          console.log(res);
           document.cookie = `access_token=${res.data.data.access_token}; max-age=900; path=/;`;
           // document.cookie = `refresh_token=${res.data.data.refresh_token}`;
           this.isLoggedIn = true;

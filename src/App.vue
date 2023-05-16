@@ -36,10 +36,27 @@ import Navbar from "@/components/Navbar.vue";
 import { useUserStore } from "./stores/UserStore";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, onMounted, onUpdated, ref } from "vue";
+import axios from "axios";
 
 const showMobileMenu = ref(false);
 const store_user = useUserStore();
 const { user } = storeToRefs(store_user);
+
+axios.interceptors.response.use(
+  (res) => {
+    return res;
+  },
+  async (err) => {
+    console.log(err.config);
+    const originalRequest = err.config;
+    if (err.response.status === 403 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      store_user.logout();
+      return Promise.resolve(true);
+    }
+    return Promise.reject(err);
+  }
+);
 /* onMounted = () => { */
 /*   store_user.fetchCurrentUser(); */
 /* }; */

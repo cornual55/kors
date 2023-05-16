@@ -12,7 +12,7 @@ export const useShelfLivesStore = defineStore("shelf_lives", {
     fetchShelfs() {
       const store_user = useUserStore();
       const { user } = storeToRefs(store_user);
-      axios.get(`/users/${user.value.id}/shelf-lives`).then((res) => {
+      axios.get(`/users/${user.value.id}/shelf-lives/?limit=30`).then((res) => {
         if (res.status == 200) {
           this.shelf_lives = res.data.data["shelf-lives"];
         }
@@ -59,6 +59,10 @@ export const useShelfLivesStore = defineStore("shelf_lives", {
         .catch((e) => console.log(e));
     },
     deleteShelf(id) {
+      let isCertain = confirm("Вы действительно хотите удалить срок годности?");
+            if (!isCertain) {
+                return false
+            }
       axios.delete(`/shelf-lives/${id}`).then((res) => {
         if (res.status == 200) {
           this.shelf_lives = this.shelf_lives.filter((sh) => sh.id !== id);

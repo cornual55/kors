@@ -33,13 +33,13 @@ export const useStoragesStore = defineStore("storages", {
       //   },
       // ];
       return axios
-        .get("/storages")
+        .get("/storages/?limit=30")
         .then((res) => (this.storages = res.data.data.storages))
         .catch((e) => alert(e.response.data));
     },
     async fetchStorageTypes() {
       return axios
-        .get("/storage-types")
+        .get("/storage-types/?limit=30")
         .then((res) => (this.storage_types = res.data.data.types))
         .catch((e) => alert(e.response.data));
     },
@@ -54,7 +54,7 @@ export const useStoragesStore = defineStore("storages", {
         })
         .then((res) => {
           if (res.status == 200) {
-            this.storages.push({ name, temperature, humidity, id_type, type });
+                    this.fetchStorages();
           }
         })
         .catch((e) => console.log(e));
@@ -106,7 +106,7 @@ export const useStoragesStore = defineStore("storages", {
     },
     createStorageType(name) {
       axios
-        .post("/storages-types/", {
+        .post("/storage-types/", {
           name: name,
         })
         .then((res) => {
@@ -141,7 +141,7 @@ export const useStoragesStore = defineStore("storages", {
       this.filters.forEach((filter) => {
         if (filter["type"] == "type_storage") {
           storages = this.storages.filter(
-            ({ type }) => type.toLowerCase() === filter.value.toLowerCase()
+            ({ type }) => type.name.toLowerCase() === filter.value.toLowerCase()
           );
         }
       });
