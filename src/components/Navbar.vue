@@ -88,12 +88,15 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { ref } from "vue";
 import { useUserStore } from "../stores/UserStore";
 import { storeToRefs } from "pinia";
 import Logo from "../components/Logo.vue";
 import axios from "axios";
+import {useRouter} from 'vue-router'
+
+const router = useRouter()
 
 const showMobileMenu = ref(false);
 

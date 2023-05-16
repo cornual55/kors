@@ -24,7 +24,7 @@
           </div> -->
         <a
           @click="this.$router.push('/login')"
-          class="underline block w-fit mx-auto mt-4 hover:text-pink-400"
+          class="underline cursor-pointer block w-fit mx-auto mt-4 hover:text-pink-400"
           >Войти</a
         >
       </div>
