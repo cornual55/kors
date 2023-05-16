@@ -64,8 +64,8 @@
         class="grid min-[320px]:grid-cols-1 sm:grid-cols-2 gap-3 my-5 md:my-0"
         v-if="!user"
       >
-        <my-button @click="this.$router.push('/login')">Войти</my-button>
-        <my-button @click="this.$router.push('/sign-up')"
+        <my-button @click="router.push('/login')">Войти</my-button>
+        <my-button @click="router.push('/sign-up')"
           >Регистрация</my-button
         >
         <!-- <a
@@ -80,7 +80,7 @@
         </a> -->
       </div>
       <div class="font-bold text-sm" v-else>
-        {{ user.name }} <svg @click="store.logout(); this.$router.push('/login')" class="inline mb-1 ml-1 cursor-pointer" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M10 2v2h12v16h-12v2h14v-20h-14zm0 7.408l2.963 2.592-2.963 2.592v-1.592h-8v-2h8v-1.592zm-2-4.408v4h-8v6h8v4l8-7-8-7z"/></svg> 
+        {{ user.name }} <svg @click="store.logout(); router.push('/login')" class="inline mb-1 ml-1 cursor-pointer" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M10 2v2h12v16h-12v2h14v-20h-14zm0 7.408l2.963 2.592-2.963 2.592v-1.592h-8v-2h8v-1.592zm-2-4.408v4h-8v6h8v4l8-7-8-7z"/></svg> 
 
                 <!-- <my-button @click="func_1">check</my-button> -->
       </div>
