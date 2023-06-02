@@ -1,10 +1,18 @@
 <template>
   <div>
     <h1 class="text-lg font-semibold"><slot></slot></h1>
-   <my-dialog v-model:show="isAdding">
-      <Form @submit="(values) => {store_products.createProduct(values); isAdding = false}" class="flex [&>*]:p-4 flex-col gap-4">
+    <my-dialog v-model:show="isAdding">
+      <Form
+        @submit="
+          (values) => {
+            store_products.createProduct(values);
+            isAdding = false;
+          }
+        "
+        class="flex [&>*]:p-4 flex-col gap-4"
+      >
         <Field name="name" type="text" placeholder="Название продукта" />
-       <!-- <Field name="category" as="select">
+        <!-- <Field name="category" as="select">
           <option value="Категория продукта" disabled></option>
         </Field> -->
         <my-button>Создать </my-button>
@@ -15,10 +23,12 @@
       class="space-y-4 flex flex-col [&>*]:p-4 mt-5"
       @submit.prevent="createShelf"
     >
-      <div class="w-full relative " style="padding: 0 !important">
+      <div
+        class="w-full flex justify-center items-center"
+        style="padding: 0 !important"
+      >
         <select
-                    class="p-4 relative w-full z-30 "
-                    @click="isShow = !isShow"
+          class="p-4 float-left w-full"
           v-model.number="shelf_life.id_product"
         >
           <option value="" disabled selected>Продукт</option>
@@ -31,12 +41,11 @@
           </option>
         </select>
         <div
-                    :class="{'-right-11': isShow}"
-                    class=" vazho cursor-pointer hover:bg-gray-300 absolute py-[0.32rem] w-28 transition-all bg-gray-200 top-0 z-20"
-                    @click="isAdding = true"
+          v-show="isAdmin"
+          class="cursor-pointer ml-1 w-12 float-right transition-all"
+          @click="isAdding = true"
         >
           <svg
-            class="w-10 float-right mr-[0.1rem] "
             clip-rule="evenodd"
             fill-rule="evenodd"
             stroke-linejoin="round"
@@ -55,6 +64,7 @@
       <input
         v-model.number="shelf_life.quantity"
         type="text"
+        @keypress="isNumber"
         placeholder="Количество"
       />
       <select v-model.number="shelf_life.id_measure">
@@ -83,12 +93,22 @@
         placeholder="Дата начала"
       /> -->
       <div class="w-full" style="padding: 0 !important">
+        <div class="mb-1">Найти дату по фото</div>
+        <input
+          @change="photoChange"
+          name="fileToDetect"
+          type="file"
+          placeholder="Загрузить фото"
+        />
+      </div>
+      <div class="w-full" style="padding: 0 !important">
         <span> Дата изготовления: </span>
         <VueDatePicker
           style="padding: 0 !important"
           class="p-0 w-full"
           :clearable="false"
-          placeholderДата изготовлен="Дата изготовления"
+          placeholderДата
+          изготовлен="Дата изготовления"
           locale="ru"
           format="dd.MM.yyyy"
           :enable-time-picker="false"
@@ -116,6 +136,7 @@
         type="text"
         placeholder="Дата окончания"
       /> -->
+      <!-- <div class="error">{{ error }}</div> -->
       <my-button type="submit">Создать</my-button>
     </form>
   </div>
@@ -125,8 +146,10 @@
 import { useMeasureStore } from "../stores/MeasuresStore";
 import { useStoragesStore } from "../stores/StoragesStore";
 import { useProductsStore } from "../stores/ProductsStore";
+import { useShelfLivesStore } from "../stores/ShelfLivesStore.js";
+import { useUserStore } from "../stores/UserStore";
 import { storeToRefs } from "pinia";
-import {Field, Form} from "vee-validate"
+import { Field, Form } from "vee-validate";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 
@@ -148,15 +171,31 @@ export default {
       purchase_date: null,
       end_date: null,
       isAdding: false,
-        isShow: false
+      isShow: false,
+      error: "",
     };
   },
   components: {
     VueDatePicker,
     Field,
-    Form
+    Form,
   },
   methods: {
+    async photoChange(e) {
+      let files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      var formData = new FormData();
+      formData.append("fileToDetect", files[0]);
+      const res = await this.store_shelf.detectShelfDates(formData);
+      if (res.error) {
+        alert(res.error);
+        return;
+      }
+      let arr = res.data[0].split(".");
+      let arr2 = res.data[1].split(".");
+      this.purchase_date = `20${arr[2]}-${arr[1]}-${arr[0]}`;
+      this.end_date = `20${arr2[2]}-${arr2[1]}-${arr2[0]}`;
+    },
     createShelf() {
       if (new Date() - this.end_date > 0) {
         alert("Продукт уже истек");
@@ -170,12 +209,27 @@ export default {
       this.shelf_life.storage = "";
       this.shelf_life.date_start = "";
       this.shelf_life.date_end = "";
-    }
+    },
+    isNumber(evt) {
+      var charCode = evt.keyCode;
+      if (
+        charCode > 31 &&
+        (charCode < 48 || charCode > 57) &&
+        charCode !== 46
+      ) {
+        evt.preventDefault();
+      }
+      return true;
+    },
+
   },
   setup() {
     const store_measure = useMeasureStore();
     const store_storages = useStoragesStore();
     const store_products = useProductsStore();
+    const store_shelf = useShelfLivesStore();
+    const store_user = useUserStore();
+    const { isAdmin } = storeToRefs(store_user);
     const { measures } = storeToRefs(store_measure);
     const { storages } = storeToRefs(store_storages);
     const { products } = storeToRefs(store_products);
@@ -184,12 +238,11 @@ export default {
     store_storages.fetchStorages();
     store_products.fetchProducts();
 
+    const addProduct = (product) => {
+      store_products.createProduct();
+    };
 
-        const addProduct = (product) => {
-            store_products.createProduct()
-        }
-
-    return { measures, storages, products, store_products };
+    return { measures, storages, products, store_products, store_shelf, isAdmin };
   },
   updated() {
     if (this.shelf_life.purchase_date !== undefined) {
@@ -202,6 +255,4 @@ export default {
 };
 </script>
 
-<style lang="postcss" scoped>
-
-</style>
+<style lang="postcss" scoped></style>

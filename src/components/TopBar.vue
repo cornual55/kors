@@ -85,7 +85,7 @@ const createClick = () => {
 
 const store = useUserStore();
 store.fetchCurrentUser();
-const { user } = storeToRefs(store);
+const { user, isAdmin } = storeToRefs(store);
 </script>
 
 <style></style>

@@ -89,15 +89,13 @@ export default {
       type: Boolean,
       default: false,
     },
-    selected: {
-      type: Array,
-    },
   },
   data() {
     return {
       search: "",
       results: [],
       isOpen: false,
+      selected: [],
     };
   },
   mounted() {
@@ -122,9 +120,7 @@ export default {
         this.selected.push(result);
       }
       if (this.order) {
-        console.log("DA DA DA DA!!");
         for (let i = 0; i < this.selected.length; i++) {
-          console.log("DA RABOTAI");
           this.selected[i].place = i + 1;
         }
       }

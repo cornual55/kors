@@ -24,7 +24,7 @@
         >Изменение срока годности</shelf-form
       ></my-dialog
     >
-    <top-bar :not_show="['sort', 'tip', 'filter', 'search']" @click_create="isAdding = !isAdding" />
+    <top-bar class="-ml-4" :not_show="['sort', 'tip', 'filter', 'search']" @click_create="isAdding = !isAdding" />
     <div class="mt-5 flex">
       <!-- <sidebar class="flex-1" /> -->
       <table class="flex-1 rounde-xl overflow-hidden">
@@ -99,6 +99,7 @@ import { useShelfLivesStore } from "../stores/ShelfLivesStore";
 import { storeToRefs } from "pinia";
 import { ref } from "vue";
 import { useStoragesStore } from "../stores/StoragesStore";
+import { useUserStore } from "../stores/UserStore";;
 import TopBar from "../components/TopBar.vue";
 
 export default {
@@ -135,6 +136,8 @@ export default {
   setup() {
     const store = useShelfLivesStore();
     const store_storages = useStoragesStore();
+    const store_user = useUserStore();
+    const { isAdmin } = storeToRefs(store_user);
     const { shelf_lives } = storeToRefs(store);
     store.fetchShelfs();
     /* store.fetchStorages(); */
@@ -147,7 +150,7 @@ export default {
     /*   }); */
     /* }); */
 
-    return { shelf_lives, store };
+    return { shelf_lives, store, isAdmin };
   },
 };
 </script>

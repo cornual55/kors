@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import { useUserStore } from "./UserStore";
+import { storeToRefs } from "pinia";
 
 // {
 // 	"name": "опажабаче",
@@ -32,8 +34,10 @@ export const useStoragesStore = defineStore("storages", {
       //     hum: 51,
       //   },
       // ];
+      const store_user = useUserStore();
+      const { user } = storeToRefs(store_user);
       return axios
-        .get("/storages/?limit=30")
+        .get(`/users/${user.value.id}/storages/?limit=30`)
         .then((res) => (this.storages = res.data.data.storages))
         .catch((e) => alert(e.response.data));
     },
@@ -45,8 +49,11 @@ export const useStoragesStore = defineStore("storages", {
     },
     createStorage({ name, temperature, humidity, id_type, type }) {
       let new_name = name.toLowerCase();
+      const store_user = useUserStore();
+      const { user } = storeToRefs(store_user);
+      const id = this.storages ? Object.entries(this.storages).length+1 : 1
       axios
-        .post("/storages", {
+        .post(`/users/${user.value.id}/storages/${id}`, {
           name: new_name,
           temperature: temperature,
           humidity: humidity,
@@ -60,8 +67,10 @@ export const useStoragesStore = defineStore("storages", {
         .catch((e) => console.log(e));
     },
     deleteStorage(id) {
+      const store_user = useUserStore();
+      const { user } = storeToRefs(store_user);
       axios
-        .delete(`storages/${id}`)
+        .delete(`/users/${user.value.id}/storages/${id}`)
         .then((res) => {
           if (res.status !== 200) {
             throw new Error();
@@ -72,8 +81,10 @@ export const useStoragesStore = defineStore("storages", {
     },
     updateStorage({ id, name, id_type, temperature, humidity }) {
       var isSuccess = false;
+      const store_user = useUserStore();
+      const { user } = storeToRefs(store_user);
       axios
-        .put(`storages/${id}`, {
+        .put(`/users/${user.value.id}/storages/${id}`, {
           name: name,
           id_type: id_type,
           temperature: temperature,

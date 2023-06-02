@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <!-- Фильтры -->
-    <div class="flex gap-4">
+    <div v-show="isAdmin" class="flex gap-4">
       <router-link class="px-4 py-2" to="/recipes">Рецепты</router-link>
       <router-link
         class="px-4 py-2 hover:bg-green rounded-lg"
@@ -9,9 +9,18 @@
         >Шаги</router-link>
     </div>
     <TopBar
+      v-if="isAdmin"
       v-model:search="store.search"
       @click_create="isAdding = true"
       @click_sort="changeSort"
+      @click_filter="sidebarIsHidden = !sidebarIsHidden"
+    />
+    <TopBar
+      v-else
+      v-model:search="store.search"
+      @click_create="isAdding = true"
+      @click_sort="changeSort"
+      :not_show="['create']"
       @click_filter="sidebarIsHidden = !sidebarIsHidden"
     />
     <div v-if="recipes === ''">Данные загружаются...</div>
@@ -53,24 +62,6 @@
             </option>
           </Field> -->
 
-          <CompleteAuto
-            class="md:hidden"
-            v-model="form_steps"
-            placeholder="Шаги..."
-            :selected="temp1"
-            :key="1"
-            :order="true"
-            :items="steps"
-          ></CompleteAuto>
-          <CompleteAuto
-            class="md:hidden"
-            :numeric="true"
-            :key="2"
-            :selected="temp2"
-            v-model="form_products"
-            placeholder="Продукты..."
-            :items="products"
-          ></CompleteAuto>
 
           <CompleteAutoOld
             class="hidden md:block"
@@ -166,7 +157,7 @@
             :items="products"
           ></CompleteAutoOld>
 
-          <my-button>Создать</my-button>
+          <my-button>Изменить</my-button>
         </Form>
       </my-dialog>
 
@@ -179,6 +170,7 @@
             @delete="store.deleteRecipe(recipe.id)"
             @edit="setCurrentRecipe(recipe)"
             :title="recipe.name"
+            :show_bar="isAdmin"
             :key="recipe.id"
           >
             {{ recipe.description }}
@@ -288,7 +280,7 @@ export default {
   setup() {
     const store = useRecipesStore();
     const store_products = useProductsStore();
-    const { user } = storeToRefs(useUserStore());
+    const { user, isAdmin } = storeToRefs(useUserStore());
 
     const { recipes, steps } = storeToRefs(store);
     const { products } = storeToRefs(store_products);
@@ -305,7 +297,7 @@ export default {
       })
     );
 
-    return { recipes, store, filter_options, steps, products, user };
+    return { recipes, store, filter_options, steps, products, user, isAdmin };
   },
 };
 </script>

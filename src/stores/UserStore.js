@@ -7,6 +7,7 @@ export const useUserStore = defineStore("user", {
     return {
       user: "",
       isLoggedIn: false,
+      isAdmin: false,
     };
   },
   actions: {
@@ -18,10 +19,15 @@ export const useUserStore = defineStore("user", {
         .shift();
       if (token !== "") {
         const decoded = jwtDecode(token);
-        console.log(decoded)
         this.user = {};
-        this.user.name = decoded.sub.name;
-        this.user.id = decoded.sub.id;
+        axios.get(`/users/${decoded.user_id}/roles`).then((res) => {
+          var arr = Object.entries(res.data.data.roles);
+          if (arr.find((x) => x[1].id === 2)) {
+            this.isAdmin = true;
+          }
+        });
+        this.user.name = decoded.username;
+        this.user.id = decoded.user_id;
         axios.defaults.headers.post["Authorization"] = `Bearer ${token}`;
         axios.defaults.headers.put["Authorization"] = `Bearer ${token}`;
         axios.defaults.headers.delete["Authorization"] = `Bearer ${token}`;
@@ -56,8 +62,8 @@ export const useUserStore = defineStore("user", {
           if (res.status != 200) throw new Error("Не удалось выполнить вход");
           const decoded = jwtDecode(res.data.data.access_token);
           this.user = {};
-          this.user.name = decoded.sub.name;
-          this.user.id = decoded.sub.id;
+          this.user.name = decoded.username;
+          this.user.id = decoded.user_id;
           axios.defaults.headers.post["Authorization"] =
             "Bearer " + res.data.data.access_token;
           axios.defaults.headers.delete["Authorization"] =
@@ -66,6 +72,12 @@ export const useUserStore = defineStore("user", {
             "Bearer " + res.data.data.access_token;
           document.cookie = `access_token=${res.data.data.access_token}; max-age=900; path=/;`;
           // document.cookie = `refresh_token=${res.data.data.refresh_token}`;
+          axios.get(`/users/${decoded.user_id}/roles`).then((res) => {
+            var arr = Object.entries(res.data.data.roles);
+            if (arr.find((x) => x[1].id === 2)) {
+              this.isAdmin = true;
+            }
+          });
           this.isLoggedIn = true;
           return true;
         })
@@ -76,6 +88,8 @@ export const useUserStore = defineStore("user", {
     async logout() {
       document.cookie = "access_token=; max-age=-1; path=/;";
       this.user = "";
+      this.isLoggedIn = false;
+      this.isAdmin = false;
     },
   },
 });

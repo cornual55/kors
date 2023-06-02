@@ -35,7 +35,7 @@
     </div>-->
 
     <div
-      :class="{'hidden': !isLoggedIn}"
+      v-show="show_bar"
       class="h-0 right-0 bg-green/30 left-0 bottom-0 text-sm opacity-0 super_card transition-all absolute flex justify-center items-center gap-6"
     >
       <button
@@ -68,7 +68,7 @@ import { useUserStore } from '../stores/UserStore';
 import { storeToRefs } from 'pinia';
 export default {
   name: "Card",
-  props: ["title", "subcaption", "content", "products"],
+  props: ["title", "subcaption", "content", "products", "show_bar"],
     setup() {
         const store = useUserStore();
         store.fetchCurrentUser();

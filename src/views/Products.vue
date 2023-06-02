@@ -7,8 +7,16 @@
       <router-link class="px-4 py-2" to="/products">Продукты</router-link>
     </div>
     <top-bar
+      v-if="isAdmin"
       class="-ml-4"
       :not_show="['sort', 'filter']"
+      v-model:search="store.search"
+      @click_create="isAdding = !isAdding"
+    />
+    <top-bar
+      v-else
+      class="-ml-4"
+      :not_show="['sort', 'filter', 'create']"
       v-model:search="store.search"
       @click_create="isAdding = !isAdding"
     />
@@ -28,6 +36,7 @@
         <div  @click="router.push('/products/' + product.id)" class="mt-3 rounded-lg p-4 bg-gray-200/90 hover:bg-gray-300/70 transition-all flex justify-between" v-for="product in store.SearchedProducts">
           <div class="hover:underline cursor-pointer">{{ product.name }}</div>
           <font-awesome-icon
+            v-show="isAdmin"
             @click="store.deleteProduct(product.id)"
             :icon="['far', 'trash-can']"
             class="text-gray-700/70 transition-all text-2xl cursor-pointer hover:text-gray-700"
@@ -41,6 +50,7 @@
 <script setup>
 import TopBar from "../components/TopBar.vue";
 import { useProductsStore } from "../stores/ProductsStore";
+import { useUserStore } from "../stores/UserStore";
 import { storeToRefs } from "pinia";
 import { onMounted, ref } from "vue";
 import { Form, Field } from "vee-validate";
@@ -50,6 +60,7 @@ const router = useRouter();
 const isAdding = ref(false);
 const store = useProductsStore();
 const { products } = storeToRefs(store);
+const {isAdmin} = storeToRefs(useUserStore())
 store.fetchProducts();
 </script>
 

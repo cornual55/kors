@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="flex gap-4">
+    <div v-show="isAdmin" class="flex gap-4">
       <router-link class="px-4 py-2" to="/storages">Места хранения</router-link>
       <router-link
         class="px-4 py-2 hover:bg-green rounded-lg"
@@ -29,14 +29,15 @@
       </sidebar>
       <!-- Заметка: здесь можно использовать @submit -->
       <div
-        :class="{ 'rgid-cols-2': !sidebarIsHidden }"
+        :class="{ 'grid-cols-2': !sidebarIsHidden }"
         class="flex-1 grid max-sm:justify-center max-sm:gap-y-5 sm:grid-cols-2 lg:grid-cols-3 sm:gap-3"
       >
-        <add-card-storage @create="store.createStorage" v-if="user" />
+        <add-card-storage @create="store.createStorage" v-if="isLoggedIn" />
         <card
           v-for="storage in store.SearchedFilteredAndSortedStorages"
           :key="storage.id"
           :title="storage.name"
+          :show_bar="isLoggedIn"
           @delete="store.deleteStorage(storage.id)"
           @edit="
             current_storage = { ...storage };
@@ -91,7 +92,7 @@ import Sidebar from "../components/Sidebar.vue";
 import Filters from "../components/Filters.vue";
 import { storeToRefs } from "pinia";
 import { ref, onMounted } from "vue";
-const { user } = storeToRefs(useUserStore());
+const { user, isAdmin, isLoggedIn } = storeToRefs(useUserStore());
 
 const store = useStoragesStore();
 const current_storage = ref({

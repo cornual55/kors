@@ -28,6 +28,25 @@ export const useShelfLivesStore = defineStore("shelf_lives", {
       //   (x) => (x.storage = storages.getStorageById(x.storage))
       // );
     },
+    detectShelfDates(photo) {
+     return axios.post("/shelf-life-detector", photo, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(res => {
+          if (res.status == 200) {
+            return res.data
+          }
+        }).catch(e => {
+          console.log(e)
+          if (e.status === 413) {
+            return {error: "Файл должен вешать 512КБ"}
+          } else {
+            return {error: "Не удалось распознать даты с изображения"}
+          }
+        })
+
+    },
     createShelf({
       id_product,
       id_storage,

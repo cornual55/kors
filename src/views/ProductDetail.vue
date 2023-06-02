@@ -1,10 +1,10 @@
 <template>
   <div class="container bg-gray-100 p-10 rounded-xl">
     <h1 class="text-2xl">{{ product.name }}</h1>
-    <p>{{ product.descripti }}</p>
+    <p>{{ product.description }}</p>
     <h2 class="text-lg mt-1 mb-3">Советы:</h2>
     <ul class="spisok space-y-5 tips">
-      <Form @submit="addTip">
+      <Form v-if="isAdmin" @submit="addTip">
         <div class="relative">
           <button class="absolute w-9 mt-1 right-2">
             <svg
@@ -38,6 +38,7 @@
 
 <script setup>
 import { useProductsStore } from "../stores/ProductsStore";
+import { useUserStore } from "../stores/UserStore";
 import {useTipsStore} from "../stores/TipsStore"
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
@@ -45,6 +46,7 @@ import { onMounted, ref } from "vue";
 import { Form, Field, ErrorMessage } from "vee-validate";
 const product = ref("");
 
+const {isAdmin} = storeToRefs(useUserStore())
 const store = useProductsStore();
 const store_tips = useTipsStore();
 const route = useRoute();

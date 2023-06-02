@@ -72,6 +72,7 @@ export const useRecipesStore = defineStore("recipes", {
     },
     async getRecipeIngredients(recipe) {
       const res = await axios.get(`/recipes/${recipe.id}/ingredients`);
+      console.log(res)
       if (res.status == 200) {
         return res.data.data.ingredients;
       }
@@ -93,7 +94,7 @@ export const useRecipesStore = defineStore("recipes", {
       return false;
     },
         async updateRecipe(recipe) {
-            axios.put("/recipes/${recipe.id}", {
+            axios.put(`/recipes/${recipe.id}`, {
                 ...recipe
             }).then(res => {
                     if (res.status === 200) {

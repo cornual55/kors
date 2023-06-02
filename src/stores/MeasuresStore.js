@@ -13,7 +13,6 @@ export const useMeasureStore = defineStore("measures", {
           if (res.status != 200) {
             throw new Error();
           }
-          console.log("YES YES YES")
           this.measures = res.data.data.measures;
         })
         .catch((e) => alert("Ошибка: данные введены неверно"));
