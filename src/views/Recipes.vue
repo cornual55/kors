@@ -22,9 +22,14 @@
       :not_show="['create']"
       @click_filter="sidebarIsHidden = !sidebarIsHidden"
     />
-    <div class="mx-auto w-fit font-bold text-xl flex flex-col items-center gap-3" v-if="recipes.length === 0">
+    <div
+      class="mx-auto w-fit font-bold text-xl flex flex-col items-center gap-3"
+      v-if="recipes.length === 0"
+    >
       Вы еще не добавили не одного рецепта
-      <my-button @click="this.$router.push('/recipes/new')" class="w-36">Добавить</my-button>
+      <my-button @click="this.$router.push('/recipes/new')" class="w-36"
+        >Добавить</my-button
+      >
     </div>
     <div v-else class="flex">
       <sidebar :is_hidden="sidebarIsHidden">
@@ -36,7 +41,7 @@
           :options="filter_options"
         />
       </sidebar>
-      
+
       <div class="flex-1">
         <div
           class="grid max-sm:justify-center max-sm:gap-y-5 sm:grid-cols-2 lg:grid-cols-3 sm:gap-3"
@@ -85,7 +90,6 @@ export default {
     return {
       bokan: false,
       sidebarIsHidden: true,
-      total_pages: 0,
       isAdding: false,
       form_products: [],
       form_steps: [],
@@ -93,6 +97,7 @@ export default {
       current_recipe: "",
       temp1: [],
       temp2: [],
+      total_pages: ''
     };
   },
   components: {
@@ -151,7 +156,9 @@ export default {
     },
   },
   mounted() {
-    this.total_pages = Math.ceil(this.recipes.length / this.store.limit);
+    this.store.fetchRecipes().then(() => {
+      this.total_pages = Math.ceil(this.recipes.length / this.store.limit);
+    });
   },
   setup() {
     const store = useRecipesStore();
@@ -160,10 +167,9 @@ export default {
 
     const { recipes, steps } = storeToRefs(store);
     const { products } = storeToRefs(store_products);
-    store.fetchRecipes();
     store.fetchSteps();
     let filter_options = [{ type: "product", name: "Продукты", values: [] }];
-    store_products.fetchProducts().then(() => { 
+    store_products.fetchProducts().then(() => {
       products.value.forEach((product) =>
         filter_options[0].values.push({
           id: product.id,
@@ -173,7 +179,15 @@ export default {
       );
     });
 
-    return { recipes, store, filter_options, steps, products, user, isAdmin };
+    return {
+      recipes,
+      store,
+      filter_options,
+      steps,
+      products,
+      user,
+      isAdmin,
+    };
   },
 };
 </script>
