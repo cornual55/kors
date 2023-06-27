@@ -62,7 +62,7 @@
     </div>
     <div class="my-16 flex justify-between gap-16">
       <Pagination v-model="store.page" :total_pages="total_pages" />
-      <select v-model="store.limit" class="w-24 px-3">
+      <select @change="changePagination()" v-model="limit" class="w-24 px-3">
         <option value="5">5</option>
         <option value="10">10</option>
         <option value="15">15</option>
@@ -154,10 +154,13 @@ export default {
       this.form_steps = [];
       this.form_products = [];
     },
+    changePagination() {
+      this.total_pages = Math.ceil(this.recipes.length / this.limit);
+    }
   },
   mounted() {
     this.store.fetchRecipes().then(() => {
-      this.total_pages = Math.ceil(this.recipes.length / this.store.limit);
+      this.total_pages = Math.ceil(this.recipes.length / this.limit);
     });
   },
   setup() {
@@ -165,7 +168,7 @@ export default {
     const store_products = useProductsStore();
     const { user, isAdmin } = storeToRefs(useUserStore());
 
-    const { recipes, steps } = storeToRefs(store);
+    const { recipes, steps, limit } = storeToRefs(store);
     const { products } = storeToRefs(store_products);
     store.fetchSteps();
     let filter_options = [{ type: "product", name: "Продукты", values: [] }];
@@ -187,6 +190,7 @@ export default {
       products,
       user,
       isAdmin,
+      limit
     };
   },
 };
