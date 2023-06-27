@@ -155,6 +155,7 @@ export default {
       this.form_products = [];
     },
     changePagination() {
+      this.store.page = 1
       this.total_pages = Math.ceil(this.recipes.length / this.limit);
     }
   },
