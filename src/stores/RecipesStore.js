@@ -230,7 +230,7 @@ export const useRecipesStore = defineStore("recipes", {
           if (recipe.ingredients) {
             continue;
           }
-          this.getRecipeIngredients(recipe).then((ingrs) => {
+          this.getRecipeIngredients(recipe.id).then((ingrs) => {
             recipe.ingredients = ingrs;
           });
         }

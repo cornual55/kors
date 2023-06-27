@@ -50,6 +50,7 @@
             v-for="recipe in store.SearchedSortedFilteredAndLimitedRecipes"
             @delete="store.deleteRecipe(recipe.id)"
             @edit="this.$router.push(`/recipes/${recipe.id}/edit`)"
+            @detail="this.$router.push(`/recipes/${recipe.id}`)"
             :title="recipe.name"
             :show_bar="isAdmin"
             :show_detail="true"
@@ -129,7 +130,7 @@ export default {
     },
     async setCurrentRecipe(recipe) {
       recipe.steps = await this.store.getRecipeSteps(recipe);
-      recipe.ingredients = await this.store.getRecipeIngredients(recipe);
+      recipe.ingredients = await this.store.getRecipeIngredients(recipe.id);
       recipe.ingredients.forEach((ingr) => {
         ingr.name = ingr.product.name;
         ingr.id = ingr.product.id;

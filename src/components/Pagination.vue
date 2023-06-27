@@ -15,7 +15,7 @@
       class="transition-all hover:bg-green bg-white py-3 px-5 cursor-pointer"
       v-for="page in total_pages"
       @click="this.$emit('update:modelValue', page)"
-      v-if="{ 'bg-green': modelValue === page }"
+      v-bind:class="{ 'bg-green': modelValue === page }"
     >
       {{ page }}
     </button>
