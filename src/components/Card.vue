@@ -53,9 +53,20 @@
       >
         <font-awesome-icon
           :icon="['far', 'trash-can']"
-          class=" transition-all text-2xl"
+          class="transition-all text-2xl"
         />
       </button>
+      <button
+        v-if="show_detail"
+        class="shadow-lg transition-all text-xl py-2 px-4 bg-gray-100 rounded-2xl hover:bg-gray-300 text-gray-600/90 hover:text-gray-700"
+        @click="this.$emit('detail')"
+      >
+        <font-awesome-icon
+          class="transition-all text-2xl rotate-180"
+          :icon="['fas', 'arrow-left']"
+        />
+      </button>
+
       <!--В рецепт входит:<br>
             1 помидор<br>
             2 супер помидор -->
@@ -64,18 +75,18 @@
 </template>
 
 <script>
-import { useUserStore } from '../stores/UserStore';
-import { storeToRefs } from 'pinia';
+import { useUserStore } from "../stores/UserStore";
+import { storeToRefs } from "pinia";
 export default {
   name: "Card",
-  props: ["title", "subcaption", "content", "products", "show_bar"],
-    setup() {
-        const store = useUserStore();
-        store.fetchCurrentUser();
-        const {isLoggedIn} = storeToRefs(store);
+  props: ["title", "subcaption", "content", "products", "show_bar", "show_detail"],
+  setup() {
+    const store = useUserStore();
+    store.fetchCurrentUser();
+    const { isLoggedIn } = storeToRefs(store);
 
-        return {isLoggedIn}
-    }
+    return { isLoggedIn };
+  },
 };
 </script>
 

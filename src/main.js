@@ -59,8 +59,23 @@ components.forEach((component) => {
   app.component(component.name, component);
 });
 
+const clickOutside = {
+  beforeMount: (el, binding) => {
+    el.clickOutsideEvent = event => {
+      if (!(el == event.target || el.contains(event.target))) {
+        binding.value();
+      }
+    };
+    document.addEventListener("click", el.clickOutsideEvent);
+  },
+  unmounted: el => {
+    document.removeEventListener("click", el.clickOutsideEvent);
+  },
+};
+
 app
   .component("font-awesome-icon", FontAwesomeIcon)
   .use(pinia)
   .use(router, axios)
+  .directive("click-outside", clickOutside)
   .mount("#app");

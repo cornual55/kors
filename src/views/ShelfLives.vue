@@ -13,19 +13,24 @@
       >
     </div>
     <my-dialog v-model:show="isAdding">
-      <shelf-form @create="createShelf">Добавление срока годности</shelf-form>
+      <shelf-form @create="createShelf" button_caption="Добавить">Добавление срока годности</shelf-form>
       <shelf-form-create />
     </my-dialog>
     <my-dialog v-model:show="isChanging"
       ><shelf-form
         :shelf_life="current_shelf"
-        @create="updateShelf
-        "
+        @create="updateShelf"
+        :button_caption="'Изменить'"
+        
         >Изменение срока годности</shelf-form
       ></my-dialog
     >
     <top-bar class="-ml-4" :not_show="['sort', 'tip', 'filter', 'search']" @click_create="isAdding = !isAdding" />
-    <div class="mt-5 flex">
+    <div class="mx-auto w-fit font-bold text-xl flex flex-col items-center gap-3" v-if="shelf_lives.length === 0">
+      Вы еще не добавили не одного срока годности
+      <my-button @click="isAdding = !isAdding" class="w-36">Добавить</my-button>
+    </div>
+    <div class="mt-5 flex" v-else>
       <!-- <sidebar class="flex-1" /> -->
       <table class="flex-1 rounde-xl overflow-hidden">
         <!-- <caption>

@@ -118,13 +118,13 @@ export default {
       type: Boolean,
       default: false,
     },
-    selected: []
   },
   data() {
     return {
       search: "",
       results: [],
-      isOpen: false
+      isOpen: false,
+      selected: [],
     };
   },
   methods: {

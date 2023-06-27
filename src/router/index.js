@@ -13,6 +13,8 @@ import Tips from "../views/Tips.vue";
 import Products from "../views/Products.vue";
 import StorageTypes from "../views/StorageTypes.vue";
 import Steps from "../views/Steps.vue";
+import RecipeNew from "../views/new_recipe.vue"
+import RecipeEdit from "../views/edit_recipe.vue"
 
 const routes = [
   {
@@ -29,6 +31,22 @@ const routes = [
     path: "/recipes/:id",
     name: "Recipe",
     component: RecipeDetail,
+  },
+  {
+    path: "/recipes/new",
+    name: "RecipeNew",
+    component: RecipeNew,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: "/recipes/:id/edit",
+    name: "RecipeEdit",
+    component: RecipeEdit,
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     path: "/shelf-lives",

@@ -8,7 +8,7 @@
       <input v-model="name" type="text" placeholder="имя пользователя" />
       <input v-model="password" type="password" placeholder="пароль" />
       <div class="error">{{ error_message }}</div>
-      <my-button>войти</my-button>
+      <my-button>Войти</my-button>
     </form>
   </div>
 </template>

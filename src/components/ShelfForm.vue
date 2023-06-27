@@ -137,7 +137,7 @@
         placeholder="Дата окончания"
       /> -->
       <!-- <div class="error">{{ error }}</div> -->
-      <my-button type="submit">Создать</my-button>
+      <my-button type="submit">{{ button_caption }}</my-button>
     </form>
   </div>
 </template>
@@ -165,6 +165,8 @@ export default {
         id_measure: "",
       },
     },
+
+        button_caption: ""
   },
   data() {
     return {

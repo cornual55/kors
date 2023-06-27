@@ -47,17 +47,17 @@ export const useStoragesStore = defineStore("storages", {
         .then((res) => (this.storage_types = res.data.data.types))
         .catch((e) => alert(e.response.data));
     },
-    createStorage({ name, temperature, humidity, id_type, type }) {
-      let new_name = name.toLowerCase();
+    createStorage(storage) {
+      let new_name = storage.name.toLowerCase();
       const store_user = useUserStore();
       const { user } = storeToRefs(store_user);
       const id = this.storages ? Object.entries(this.storages).length+1 : 1
       axios
         .post(`/users/${user.value.id}/storages/${id}`, {
           name: new_name,
-          temperature: temperature,
-          humidity: humidity,
-          id_type: id_type,
+          temperature: storage.temperature,
+          humidity: storage.humidity,
+          id_type: storage.id_type,
         })
         .then((res) => {
           if (res.status == 200) {
@@ -79,16 +79,14 @@ export const useStoragesStore = defineStore("storages", {
         })
         .catch((e) => alert("Не удалось удалить"));
     },
-    updateStorage({ id, name, id_type, temperature, humidity }) {
+    updateStorage(storage) {
       var isSuccess = false;
-      const store_user = useUserStore();
-      const { user } = storeToRefs(store_user);
       axios
-        .put(`/users/${user.value.id}/storages/${id}`, {
-          name: name,
-          id_type: id_type,
-          temperature: temperature,
-          humidity: humidity,
+        .put(`/storages/${storage.id}`, {
+          name: storage.name,
+          id_type: storage.id_type,
+          temperature: storage.temperature,
+          humidity: storage.humidity,
         })
         .then((res) => {
           if (res.status === 200) {
@@ -126,6 +124,10 @@ export const useStoragesStore = defineStore("storages", {
             this.fetchStorageTypes();
           }
         });
+    },
+    async getStorageById(id) {
+      return axios.get("/storages/"+id)
+      .then(res => {return res.data.data.storage})
     },
     addFilter(filter) {
       this.filters.push(filter);
