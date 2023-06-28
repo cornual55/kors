@@ -51,25 +51,26 @@
         </ol>
       </div>
     </div>
-    <div class="mt-4 grid md:grid-cols-2 gap-5">
-      <h2 class="text-xl mt-4 font-semibold">Место хранения {{ storage.name }}</h2>
+    <!--
     <p>Температура - {{ storage.temperature }}°C</p>
     <p>Влажность - {{ storage.humidity }}%</p>
-    <p>Тип места: {{ storage_type.name }}</p>
-    </div>
-    <h2 class="text-xl mt-4 font-semibold">Советы</h2>
+    <p>Тип места: {{ storage.type.name }}</p> -->
+
+    <h2 class="text-xl mt-4 font-semibold">
+      Советы место хранения {{ storage.name }}
+    </h2>
     <div class="mt-2">
       <div class="bg-gray-200/70 rounded-xl p-5">
         <ol class="list-decimal ml-5">
-          <div v-if="storage_tips.length === 0">
+          <div v-if="tips.length === 0">
             <p class="text-sm">По этому месту хранения еще нету советов</p>
           </div>
-          <li v-else v-for="tip in storage_tips" :key="tip.id">
+          <li v-else v-for="tip in storage.tips" :key="tip.id">
             {{ tip.description }}
             <font-awesome-icon
               v-if="isAdmin"
               @click="
-                store_storages.deleteTip(storage.id, tip.id).then((res) => {
+                store_products.deleteTip(storage.id, tip.id).then((res) => {
                   router.go();
                 })
               "
@@ -114,23 +115,30 @@ let store_products = useProductsStore();
 let store_storages = useStoragesStore();
 let store_tips = useTipsStore();
 
-let { isAdmin } = storeToRefs(useUserStore());
+// let { isAdmin } = storeToRefs(useUserStore());
 
 let shelf_life = ref({});
 let product = ref({});
 let tips = ref([]);
-let storage = ref({})
-let storage_type = ref({})
-let storage_tips = ref([])
-
-onMounted(async () => {
-  shelf_life.value = await store.getShelfLifeById(route.params.id);
-
+let storage = ref({});
+store.getShelfLifeById(route.params.id).then((res) => {
+  shelf_life.value = res;
   product.value = shelf_life.value.product;
   storage.value = shelf_life.value.storage;
-  storage_type.value = storage.type
-  storage_tips.value = await store_storages.getTips(storage.value.id)
-  tips.value = await store_products.getProductTips(shelf_life.value.product.id);
+  store_products.getProductTips(shelf_life.value.product.id).then((res) => {
+    tips.value = res;
+  });
+  store_storages.getTips(storage.value.id).then((res) => {
+    storage.value.tips = res;
+  });
+});
+
+onMounted(async () => {
+  // shelf_life.value = await store.getShelfLifeById(route.params.id);
+  //product.value = shelf_life.value.product;
+  //storage.value = shelf_life.value.storage;
+  //storage.tips.value = await store_storages.getTips(storage.id);
+  // tips.value = await store_products.getProductTips(shelf_life.value.product.id);
 });
 </script>
 

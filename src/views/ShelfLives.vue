@@ -46,7 +46,7 @@
           <th>Статус</th>
           <th>Изменить</th>
           <th>Удалить</th>
-          <!--<th>Просмотр</th>-->
+          <th>Просмотр</th>
         </tr>
         <tr v-for="shelf_life in shelf_lives" :key="shelf_life.id">
           <td class="hover:underline cursor-pointer" @click="this.$router.push('/products/'+shelf_life.product.id)">{{ shelf_life.product.name }}</td>
@@ -93,13 +93,13 @@
               class="text-gray-700/70 transition-all text-2xl cursor-pointer hover:text-gray-700"
             />
           </td>
-          <!--<td style="text-align: center !important">
+          <td style="text-align: center !important">
             <font-awesome-icon
               @click="this.$router.push('/shelf_lives/'+shelf_life.id)"
               :icon="['far', 'eye']"
               class="text-gray-700/70 transition-all text-2xl cursor-pointer hover:text-gray-700"
             />
-          </td>-->
+          </td>
         </tr>
       </table>
     </div>
