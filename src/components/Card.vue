@@ -34,8 +34,14 @@
       </button> 
     </div>-->
 
+    <div class="bg-gray-200/50" v-if="!show_bar">
+      <div
+        class="bg-gray-200/90 relative px-10 py-3 cursor-pointer hover:shadow-inner hover:bg-gray-300 transition-all" @click="this.$emit('detail')"
+      >
+        <button class="w-full">Посмотреть</button>
+      </div>
+    </div>
     <div
-      v-show="show_bar"
       class="h-0 right-0 bg-green/30 left-0 bottom-0 text-sm opacity-0 super_card transition-all absolute flex justify-center items-center gap-6"
     >
       <button
@@ -79,7 +85,15 @@ import { useUserStore } from "../stores/UserStore";
 import { storeToRefs } from "pinia";
 export default {
   name: "Card",
-  props: ["title", "subcaption", "content", "products", "show_bar", "show_detail"],
+  props: [
+    "title",
+    "subcaption",
+    "content",
+    "products",
+    "show_bar",
+    "show_detail",
+    "not_show_all"
+  ],
   setup() {
     const store = useUserStore();
     store.fetchCurrentUser();

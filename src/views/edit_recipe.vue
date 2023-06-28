@@ -183,7 +183,7 @@ async function changeRecipe(values, actions) {
   }
 
   ingredients.forEach((ingr) => {
-    //delete ingr.name;
+    delete ingr.name;
   });
   for (var i = 0; i < selected_steps.length; i++) {
     selected_steps[i].place = i + 1;

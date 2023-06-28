@@ -1,19 +1,18 @@
 <template>
   <div class="container">
-    <div class="ml-auto w-fit">
-      Поиск по:
-      <select class="ml-3 cursor-pointer bg-gray-100 px-5 py-3">
-        <option value="storage">Месту хранения</option>
-        <option value="product">Продукту</option>
-        <option value="tip">Названию совета</option>
-      </select>
+    <top-bar
+      v-model:search="store.search"
+      :not_show="['tip', 'sort', 'create']"
+      @click_filter="sidebarIsHidden = !sidebarIsHidden"
+      @click_create="isAdding = true"
+    />
+    <div
+      class="mx-auto w-fit font-bold text-xl flex flex-col items-center gap-3"
+      v-if="tips.length === 0"
+    >
+      Вы еще не добавили не одного совета
     </div>
-    <top-bar @click_filter="sidebarIsHidden = !sidebarIsHidden" />
-    СТРАНИЦА НАХОДИТСЯ В РАЗРАБОТКЕ
-    <div class="hidden mx-auto w-fit font-bold text-xl" v-if="storages === ''">
-      Данные загружаются...
-    </div>
-    <div class="hidden flex gap-3" v-else>
+    <div class="flex">
       <sidebar :is_hidden="sidebarIsHidden">
         <Filters
           @change="
@@ -21,102 +20,82 @@
               isForAdding ? store.addFilter(filter) : store.removeFilter(filter)
           "
           :options="filter_options"
-        />
+        /> 
       </sidebar>
-      <!-- Заметка: здесь можно использовать @submit -->
       <div
+        :class="{ 'grid-cols-2': !sidebarIsHidden }"
         class="flex-1 grid max-sm:justify-center max-sm:gap-y-5 sm:grid-cols-2 lg:grid-cols-3 sm:gap-3"
       >
         <card
-          v-for="storage in filteredStorages"
-          :key="storage.id"
-          :title="storage.name"
-          @delete="store.deleteStorage(storage.id)"
-          @edit="
-            current_storage = { ...storage };
-            isChanging = true;
-          "
+          v-for="tip in store.SearchedFilteredAndSortedTips"
+          :key="tip.id"
+          :title="'Совет'"
+          :show_bar="isLoggedIn"
+          @delete="store.deleteTip(tip.id)"
+          @edit="changeTip(tip)"
         >
-          Температура - {{ storage.temperature }}°C <br />Влажность -
-          {{ storage.humidity }}%<br />
-          Тип места: {{ storage.type }}
+          {{ tip.description }}
         </card>
-        <my-dialog v-model:show="isChanging">
-          <form
-            class="space-y-4 flex flex-col [&>input]:p-4 mt-5 [&>select]:p-4 mt-5"
-            @submit.prevent
-          >
-            <div>Название</div>
-            <input
-              type="text"
-              v-model="current_storage.name"
-              placeholder="Название"
-            />
-            <div>Тип</div>
-            <select v-model="current_storage.id_type">
-              <option value="" disabled>{{ current_storage.type }}</option>
-              <option
-                v-for="storage_type in storage_types"
-                :key="storage_type.id"
-                :value="storage_type.id"
-              >
-                {{ storage_type.name }}
-              </option>
-            </select>
-            <div>Температура (°C)</div>
-            <input type="text" v-model.number="current_storage.temperature" />
-            <div>Влажность (%)</div>
-            <input type="text" v-model.number="current_storage.humidity" />
-            <my-button @click="updateStorage">Изменить</my-button>
-          </form>
-        </my-dialog>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { useStoragesStore } from "../stores/StoragesStore";
+import { useTipsStore } from "../stores/TipsStore";
 import { useUserStore } from "../stores/UserStore";
-import Card from "../components/Card.vue";
-/* import AddCardStorage from "../components/AddCardStorage.vue"; */
+import { useStoragesStore } from "../stores/StoragesStore";
+import { useProductsStore } from "../stores/ProductsStore";
+import { storeToRefs } from "pinia";
+import { ref, onMounted } from "vue";
+
 import TopBar from "../components/TopBar.vue";
 import Sidebar from "../components/Sidebar.vue";
 import Filters from "../components/Filters.vue";
-import { storeToRefs } from "pinia";
-import { ref, onMounted } from "vue";
-const { user } = storeToRefs(useUserStore());
+import Card from "../components/Card.vue";
 
-const store = useStoragesStore();
-const current_storage = ref({});
+const store = useTipsStore();
+const store_storages = useStoragesStore();
+const store_products = useProductsStore();
+
+const { isLoggedIn } = storeToRefs(useUserStore())
 const isChanging = ref(false);
+const isAdding = ref(false);
 const sidebarIsHidden = ref(true);
-const { storages, storage_types, filteredStorages } = storeToRefs(store);
 
-const updateStorage = () => {
-  let isSuccess = true;
-  if (isSuccess) {
-    isChanging.value = false;
-  }
-};
+const { tips } = storeToRefs(store);
+store.fetchTips();
 
 const filter_options = ref([
-  { type: "type_storage", name: "Тип места хранения", values: [] },
+  { type: "storage", name: "Место хранения", values: [] },
+  { type: "product", name: "Продукт", values: [] }
 ]);
 
 onMounted(async () => {
-  store.fetchStorages();
-  await store.fetchStorageTypes();
-
-  storage_types.value.forEach((storage_type) => {
-    console.log(storage_type);
+  let { storages } = storeToRefs(store_storages);
+  let { products } = storeToRefs(store_products);
+  await store_storages.fetchStorages();
+  await store_products.fetchProducts();
+  storages.value.forEach((storage) => {
+    /* console.log(storage_type); */
     filter_options.value[0].values.push({
-      id: storage_type.id,
-      name: storage_type.name,
-      value: storage_type.name,
+      id: storage.id,
+      name: storage.name,
+      value: storage.id,
     });
   });
+  products.value.forEach((product) => {
+    filter_options.value[1].values.push({
+      id: product.id,
+      name: product.name,
+      value: product.id
+    })
+  })
 });
+
+const changeTip = (tip) => {
+
+}
 </script>
 
 <style scoped></style>

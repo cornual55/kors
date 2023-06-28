@@ -14,31 +14,54 @@ export const useProductsStore = defineStore("products", {
         .then((res) => {
           if (res.status == 200) {
             this.products = res.data.data.products;
+            // this.products.forEach(async (product) => {
+            //   let category = await this.getProductCategory(product.id);
+            //   product.id_category = category[0].id
+            //   product.name_category = category[0].name
+            // });
             return true;
           }
         })
         .catch((e) => console.log(e));
     },
-    createProduct({ name }) {
-      axios
+    async createProduct({ name, category_id }) {
+      return axios
         .post("/products", {
           name: name,
         })
-        .then((res) => {
+        .then(async (res) => {
           if (res.status == 200) {
-            this.fetchProducts();
+            await this.fetchProducts();
+            let product = this.products.find((x) => x.name == name);
+            axios.post(`/products/${product.id}/categories/${category_id}`);
             // НЕТ ID this.products.push({ name: name, id:  });
           } else {
             alert("Не удалось создать продукт");
           }
         });
     },
-    updateProduct(id) {
-      axios.put("/products/" + id).then((res) => {
-        if (res.status == 200) {
-          this.fetchProducts();
-          alert("Продукт успешно обнавлен");
-        }
+    async updateProduct(product) {
+      let id = product.id;
+      let category_id = product.category_id;
+      return axios
+        .put("/products/" + id, { name: product.name })
+        .then(async (res) => {
+          if (res.status == 200) {
+            let categories = await this.getProductCategory(id);
+            categories.forEach((t_cat) => {
+              axios.delete(`/products/${product.id}/categories/${t_cat.id}`);
+            });
+            await axios.post(
+              `/products/${product.id}/categories/${category_id}`
+            );
+            this.fetchProducts();
+            alert("Продукт успешно обновлен");
+          }
+        });
+    },
+    async getProductCategory(id) {
+      return axios.get(`/products/${id}/categories`).then((res) => {
+        return res.data.data.categories;
       });
     },
     deleteProduct(id) {
@@ -62,19 +85,30 @@ export const useProductsStore = defineStore("products", {
       }
     },
     async addTip(id, id_tip) {
-      axios
-        .post(`/products/${id}/tips/${id_tip}`)
-        .then((res) => {
-          if (res.status == 200) {
-            this.fetchProducts();
-            return true;
-          }
-        });
+      return axios.post(`/products/${id}/tips/${id_tip}`).then((res) => {
+        if (res.status == 200) {
+          this.fetchProducts();
+          return true;
+        }
+      });
     },
+    async deleteTip(id, id_tip) {
+      return axios.delete(`/products/${id}/tips/${id_tip}`).then(res => {
+        if (res.status == 200) {
+          this.fetchProducts();
+          return true;
+        }
+      })
+    }
   },
   getters: {
     SearchedProducts() {
       let products = [...this.products];
+      products.forEach(async (product) => {
+        let category = await this.getProductCategory(product.id);
+        product.id_category = category[0].id;
+        product.name_category = category[0].name;
+      });
       return products.filter((x) =>
         x.name.toLowerCase().includes(this.search.toLocaleLowerCase())
       );

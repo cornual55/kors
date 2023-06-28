@@ -136,8 +136,8 @@
         type="text"
         placeholder="Дата окончания"
       /> -->
-      <!-- <div class="error">{{ error }}</div> -->
       <my-button type="submit">{{ button_caption }}</my-button>
+      <!--<div v-if="error" class="error text-sm">{{ error }}</div>-->
     </form>
   </div>
 </template>
@@ -193,14 +193,17 @@ export default {
         alert(res.error);
         return;
       }
-      let arr = res.data[0].split(".");
-      let arr2 = res.data[1].split(".");
-      this.purchase_date = `20${arr[2]}-${arr[1]}-${arr[0]}`;
-      this.end_date = `20${arr2[2]}-${arr2[1]}-${arr2[0]}`;
+      this.purchase_date = res.data[0];
+      this.end_date = res.data[1];
     },
     createShelf() {
+      this.error = ""
       if (new Date() - this.end_date > 0) {
-        alert("Продукт уже истек");
+        alert("Продукт уже истек")
+        return false;
+      }
+      if (this.purchase_date > this.end_date) {
+        alert("Дата начала не может быть больше даты окончания")
         return false;
       }
       this.shelf_life.purchase_date = this.purchase_date.toISOString();

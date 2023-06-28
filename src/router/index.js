@@ -15,6 +15,9 @@ import StorageTypes from "../views/StorageTypes.vue";
 import Steps from "../views/Steps.vue";
 import RecipeNew from "../views/new_recipe.vue"
 import RecipeEdit from "../views/edit_recipe.vue"
+import ShelfDetail from "../views/ShelfDetail.vue"
+import Categories from "../views/Categories.vue"
+import StoragesDetail from "../views/StorageDetail.vue"
 
 const routes = [
   {
@@ -65,9 +68,25 @@ const routes = [
     },
   },
   {
+    path: "/shelf_lives/:id",
+    name: "ShelfDetail",
+    component: ShelfDetail,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
     path: "/storages",
     name: "Storages",
     component: Storages,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: "/storages/:id",
+    name: "StoragesDetail",
+    component: StoragesDetail,
     meta: {
       requiresAuth: true,
     },
@@ -94,11 +113,22 @@ const routes = [
     path: "/tips",
     component: Tips,
     name: "Tips",
+   meta: {
+      requiresAuth: true,
+    },
   },
   {
     path: "/products",
     component: Products,
     name: "Products",
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: "/categories",
+    component: Categories,
+    name: "Categories",
     meta: {
       requiresAuth: true,
     },

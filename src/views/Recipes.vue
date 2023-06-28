@@ -61,7 +61,7 @@
         </div>
       </div>
     </div>
-    <div class="my-16 flex justify-between gap-16">
+    <div  v-if="recipes.length !== 0" class="my-16 flex justify-between gap-16">
       <Pagination v-model="store.page" :total_pages="total_pages" />
       <select @change="changePagination()" v-model="limit" class="w-24 px-3">
         <option value="5">5</option>

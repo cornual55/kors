@@ -11,6 +11,7 @@
       <router-link class="px-4 py-2 hover:bg-green rounded-lg" to="/products"
         >Продукты</router-link
       >
+      <router-link class="px-4 py-2 hover:bg-green rounded-lg" to="/categories">Категории</router-link>
     </div>
     <my-dialog v-model:show="isAdding">
       <shelf-form @create="createShelf" button_caption="Добавить">Добавление срока годности</shelf-form>
@@ -32,7 +33,7 @@
     </div>
     <div class="mt-5 flex" v-else>
       <!-- <sidebar class="flex-1" /> -->
-      <table class="flex-1 rounde-xl overflow-hidden">
+      <table class="flex-1 rounded-xl overflow-hidden">
         <!-- <caption>
           Продукты
         </caption> -->
@@ -45,6 +46,7 @@
           <th>Статус</th>
           <th>Изменить</th>
           <th>Удалить</th>
+          <!--<th>Просмотр</th>-->
         </tr>
         <tr v-for="shelf_life in shelf_lives" :key="shelf_life.id">
           <td class="hover:underline cursor-pointer" @click="this.$router.push('/products/'+shelf_life.product.id)">{{ shelf_life.product.name }}</td>
@@ -91,6 +93,13 @@
               class="text-gray-700/70 transition-all text-2xl cursor-pointer hover:text-gray-700"
             />
           </td>
+          <!--<td style="text-align: center !important">
+            <font-awesome-icon
+              @click="this.$router.push('/shelf_lives/'+shelf_life.id)"
+              :icon="['far', 'eye']"
+              class="text-gray-700/70 transition-all text-2xl cursor-pointer hover:text-gray-700"
+            />
+          </td>-->
         </tr>
       </table>
     </div>

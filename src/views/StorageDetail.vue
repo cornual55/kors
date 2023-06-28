@@ -1,7 +1,9 @@
 <template>
   <div class="container bg-gray-100 p-10 rounded-xl">
-    <h1 class="text-2xl">{{ product.name }}</h1>
-    <p>{{ product.descripti }}</p>
+    <h1 class="text-2xl capitalize">{{ storage.name }}</h1>
+    <p>Температура - {{ storage.temperature }}°C</p>
+    <p>Влажность - {{ storage.humidity }}%</p>
+    <p>Тип места: {{ storage.type.name }}</p>
     <h2 class="text-lg mt-1 mb-3">Советы:</h2>
     <ul class="spisok space-y-5 tips">
       <Form @submit="addTip">
@@ -29,41 +31,60 @@
             type="text"
           />
         </div>
-        <ErrorMessage name="description" class="error p-3 " />
+        <ErrorMessage name="description" class="error p-3" />
       </Form>
-      <li v-for="tip in tips" :key="tip.id">{{ tip.description }}</li>
+      <li v-for="tip in tips" :key="tip.id">
+        {{ tip.description }}
+        <font-awesome-icon
+          v-if="isAdmin"
+          @click="
+            store.deleteTip(route.params.id, tip.id).then((res) => {
+              router.go();
+            })
+          "
+          :icon="['far', 'trash-can']"
+          class="float-right transition-all -mt-[0.1rem] mr-[0.3rem] text-2xl cursor-pointer hover:text-gray-700"
+        />
+      </li>
     </ul>
   </div>
 </template>
 
 <script setup>
-import { useProductsStore } from "../stores/ProductsStore";
-import {useTipsStore} from "../stores/TipsStore"
-import { useRoute } from "vue-router";
+import { useStoragesStore } from "../stores/StoragesStore";
+import { useTipsStore } from "../stores/TipsStore";
+import { useRoute, useRouter } from "vue-router";
+import { useUserStore } from "../stores/UserStore";
 import { storeToRefs } from "pinia";
 import { onMounted, ref } from "vue";
 import { Form, Field, ErrorMessage } from "vee-validate";
-const product = ref("");
+const storage = ref({
+  type: {
+    name: "",
+  },
+});
 
-const store = useProductsStore();
+const store = useStoragesStore();
 const store_tips = useTipsStore();
 const route = useRoute();
+const router = useRouter();
 const tips = ref([]);
+const { isAdmin } = storeToRefs(useUserStore());
 onMounted(async () => {
   let id = route.params.id;
-  product.value = await store.getProductById(id);
-  tips.value = await store.getProductTips(id);
+  storage.value = await store.getStorageById(id);
+  tips.value = await store.getTips(id);
 });
 
 const addTip = async (tip, actions) => {
-    let tip_n = await store_tips.createTip(tip)
-    if (tip_n) {
-        store.addTip(route.params.id, tip_n.id)
-        tips.value.push(tip_n)
-    } else {
-        actions.setFieldError("description", "не удалось создать совет")
-    }
-}
+  let tip_n = await store_tips.createTip(tip);
+  if (tip_n) {
+    store.addTip(route.params.id, tip_n.id);
+    tips.value.push(tip_n);
+  } else {
+    actions.setFieldError("description", "не удалось создать совет");
+  }
+};
 /* console.log(GetProductById(1)) */
 </script>
 
@@ -73,6 +94,6 @@ const addTip = async (tip, actions) => {
 }
 
 .spisok > * {
- @apply bg-gray-200/90 hover:bg-gray-300/60
+  @apply bg-gray-200/90 hover:bg-gray-300/60;
 }
 </style>

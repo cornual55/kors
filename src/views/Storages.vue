@@ -99,9 +99,11 @@
           v-for="storage in store.SearchedFilteredAndSortedStorages"
           :key="storage.id"
           :title="storage.name"
+          :show_detail="true"
           :show_bar="isLoggedIn"
           @delete="store.deleteStorage(storage.id)"
           @edit="changeStorage(storage)"
+          @detail="router.push(`/storages/${storage.id}`)"
         >
           Температура - {{ storage.temperature }}°C <br />Влажность -
           {{ storage.humidity }}%<br />
@@ -113,6 +115,7 @@
 </template>
 
 <script setup>
+import { useRouter } from "vue-router";
 import { useStoragesStore } from "../stores/StoragesStore";
 import { useUserStore } from "../stores/UserStore";
 import Card from "../components/Card.vue";
@@ -130,6 +133,8 @@ let current_storage = ref({
     id: 0,
   },
 });
+
+let router = useRouter();
 
 let isChanging = ref(false);
 let isAdding = ref(false);
@@ -154,7 +159,6 @@ const updateStorage = () => {
 };
 
 const createStorage = () => {
-
   store.createStorage(new_storage.value);
 
   isAdding.value = false;

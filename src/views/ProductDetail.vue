@@ -29,9 +29,21 @@
             type="text"
           />
         </div>
-        <ErrorMessage name="description" class="error p-3 " />
+        <ErrorMessage name="description" class="error p-3" />
       </Form>
-      <li v-for="tip in tips" :key="tip.id">{{ tip.description }}</li>
+      <li v-for="tip in tips" :key="tip.id">
+        {{ tip.description }}
+        <font-awesome-icon
+          v-if="isAdmin"
+          @click="
+            store.deleteTip(route.params.id, tip.id).then((res) => {
+              router.go();
+            })
+          "
+          :icon="['far', 'trash-can']"
+          class="float-right transition-all -mt-[0.1rem] mr-[0.3rem]  text-2xl cursor-pointer hover:text-gray-700"
+        />
+      </li>
     </ul>
   </div>
 </template>
@@ -39,14 +51,15 @@
 <script setup>
 import { useProductsStore } from "../stores/ProductsStore";
 import { useUserStore } from "../stores/UserStore";
-import {useTipsStore} from "../stores/TipsStore"
-import { useRoute } from "vue-router";
+import { useTipsStore } from "../stores/TipsStore";
+import { useRoute, useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { onMounted, ref } from "vue";
 import { Form, Field, ErrorMessage } from "vee-validate";
 const product = ref("");
 
-const {isAdmin} = storeToRefs(useUserStore())
+const router = useRouter();
+const { isAdmin } = storeToRefs(useUserStore());
 const store = useProductsStore();
 const store_tips = useTipsStore();
 const route = useRoute();
@@ -58,14 +71,14 @@ onMounted(async () => {
 });
 
 const addTip = async (tip, actions) => {
-    let tip_n = await store_tips.createTip(tip)
-    if (tip_n) {
-        store.addTip(route.params.id, tip_n.id)
-        tips.value.push(tip_n)
-    } else {
-        actions.setFieldError("description", "не удалось создать совет")
-    }
-}
+  let tip_n = await store_tips.createTip(tip);
+  if (tip_n) {
+    store.addTip(route.params.id, tip_n.id);
+    tips.value.push(tip_n);
+  } else {
+    actions.setFieldError("description", "не удалось создать совет");
+  }
+};
 /* console.log(GetProductById(1)) */
 </script>
 
@@ -75,6 +88,6 @@ const addTip = async (tip, actions) => {
 }
 
 .spisok > * {
- @apply bg-gray-200/90 hover:bg-gray-300/60
+  @apply bg-gray-200/90 hover:bg-gray-300/60;
 }
 </style>

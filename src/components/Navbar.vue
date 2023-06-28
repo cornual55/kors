@@ -57,7 +57,7 @@
             Места хранения
           </router-link>
           <router-link to="/recipes" class="px-4 py-2"> Рецепты </router-link>
-          <router-link v-show="false" to="/tips" class="px-4 py-2"> Советы </router-link>
+          <router-link to="/tips" class="px-4 py-2" v-if='user'> Советы </router-link>
         </div>
       </nav>
       <div

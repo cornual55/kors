@@ -28,7 +28,11 @@ export const useShelfLivesStore = defineStore("shelf_lives", {
       //   (x) => (x.storage = storages.getStorageById(x.storage))
       // );
     },
-    detectShelfDates(photo) {
+    async getShelfLifeById(id) {
+      return axios.get(`shelf-lives/${id}`)
+                  .then(res => res.data.data.shelf_life)
+    },
+    async detectShelfDates(photo) {
      return axios.post("/shelf-life-detector", photo, {
         headers: {
           'Content-Type': 'multipart/form-data'

@@ -36,6 +36,7 @@ import {
   faPlusSquare,
   faPenToSquare,
   faTrashCan,
+  faEye
 } from "@fortawesome/free-regular-svg-icons";
 
 import {
@@ -52,7 +53,8 @@ library.add(
   faChevronUp,
   faPenToSquare,
   faTrashCan,
-  faArrowLeft
+  faArrowLeft,
+  faEye
 );
 
 components.forEach((component) => {

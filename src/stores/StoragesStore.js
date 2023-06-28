@@ -51,7 +51,7 @@ export const useStoragesStore = defineStore("storages", {
       let new_name = storage.name.toLowerCase();
       const store_user = useUserStore();
       const { user } = storeToRefs(store_user);
-      const id = this.storages ? Object.entries(this.storages).length+1 : 1
+      const id = this.storages ? Object.entries(this.storages).length + 1 : 1;
       axios
         .post(`/users/${user.value.id}/storages/${id}`, {
           name: new_name,
@@ -61,7 +61,7 @@ export const useStoragesStore = defineStore("storages", {
         })
         .then((res) => {
           if (res.status == 200) {
-                    this.fetchStorages();
+            this.fetchStorages();
           }
         })
         .catch((e) => console.log(e));
@@ -126,8 +126,9 @@ export const useStoragesStore = defineStore("storages", {
         });
     },
     async getStorageById(id) {
-      return axios.get("/storages/"+id)
-      .then(res => {return res.data.data.storage})
+      return axios.get("/storages/" + id).then((res) => {
+        return res.data.data.storage;
+      });
     },
     addFilter(filter) {
       this.filters.push(filter);
@@ -137,6 +138,17 @@ export const useStoragesStore = defineStore("storages", {
         return x.type !== filter.type && x.value !== filter.value;
       });
     },
+    async getTips(id) {
+      return axios.get(`/storages/${id}/tips`).then((res) => {
+        return res.data.data.tips;
+      });
+    },
+    async addTip(id, id_tip) {
+      return axios.post(`/storages/${id}/tips/${id_tip}`)
+    },
+    async deleteTip(id, id_tip) {
+      return axios.delete(`/storages/${id}/tips/${id_tip}`)
+    }
   },
   getters: {
     // async getStorageTypeById(id) {
