@@ -53,7 +53,7 @@ export const useStoragesStore = defineStore("storages", {
       const { user } = storeToRefs(store_user);
       const id = this.storages ? Object.entries(this.storages).length + 1 : 1;
       axios
-        .post(`/users/${user.value.id}/storages/${id}`, {
+        .post(`/users/${user.value.id}/storages/`, {
           name: new_name,
           temperature: storage.temperature,
           humidity: storage.humidity,
