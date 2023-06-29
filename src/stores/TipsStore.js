@@ -42,6 +42,16 @@ export const useTipsStore = defineStore("tips", {
         }
       })
     },
+    async updateTip(tip_id, description) {
+      return axios.put(`/tips/${tip_id}`, {
+        description: description
+      }).then(res => {
+          if (res.status === 200) {
+            alert("Совет успешно обновлен");
+            this.fetchTips()();
+          }
+        })
+    },
     addFilter(filter) {
       this.filters.push(filter);
     },

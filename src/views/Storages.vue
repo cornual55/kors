@@ -191,7 +191,7 @@ const updateStorage = (values) => {
 
   current_storage.id_type = current_storage.type.id;
   let id = current_storage.id
-  store.updateStorage({name: values.name,  id_type: values.id_type, humidity: Number(values.humidity), temperature: Number(values.temperaturee), id});
+  store.updateStorage({name: values.name,  id_type: values.id_type, humidity: Number(values.humidity), temperature: Number(values.temperature), id});
 
   isChanging.value = false;
 };

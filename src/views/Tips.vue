@@ -12,6 +12,15 @@
     >
       Вы еще не добавили не одного совета
     </div>
+    <my-dialog v-model:show="isChanging">
+      <h2 class="text-xl">Изменение совета</h2>
+      <Form ref="edit_form" @submit="updateTip" class="flex [&>*]:p-4 flex-col gap-4">
+        Описание:
+        <Field name="description" type="text" :rules="string_rules" placeholder="Описание" />
+        <ErrorMessage class="error" name="description"/>
+        <my-button>Изменить</my-button>
+      </Form>
+    </my-dialog>
     <div class="flex">
       <sidebar :is_hidden="sidebarIsHidden">
         <Filters
@@ -48,6 +57,13 @@ import { useStoragesStore } from "../stores/StoragesStore";
 import { useProductsStore } from "../stores/ProductsStore";
 import { storeToRefs } from "pinia";
 import { ref, onMounted } from "vue";
+import { Form, Field, ErrorMessage } from "vee-validate";
+import * as yup from "yup";
+
+let string_rules = yup.string().required().min(5);
+let number_rules = yup.number().required().positive();
+
+const edit_form = ref(null);
 
 import TopBar from "../components/TopBar.vue";
 import Sidebar from "../components/Sidebar.vue";
@@ -62,6 +78,7 @@ const { isLoggedIn } = storeToRefs(useUserStore())
 const isChanging = ref(false);
 const isAdding = ref(false);
 const sidebarIsHidden = ref(true);
+let current_tip = ref({});
 
 const { tips } = storeToRefs(store);
 store.fetchTips();
@@ -70,6 +87,12 @@ const filter_options = ref([
   { type: "storage", name: "Место хранения", values: [] },
   { type: "product", name: "Продукт", values: [] }
 ]);
+
+const updateTip = (values, actions) => {
+
+  store.updateTip(current_tip.value.id, values.description)
+  isChanging.value = false;
+}
 
 onMounted(async () => {
   let { storages } = storeToRefs(store_storages);
@@ -94,7 +117,12 @@ onMounted(async () => {
 });
 
 const changeTip = (tip) => {
+  current_tip.value = tip;
+  isChanging.value = true;
 
+  edit_form.value.setValues({
+    description: tip.description
+  })
 }
 </script>
 

@@ -71,8 +71,8 @@
             }}
           </td>
           <td v-if="shelf_life.purchase_date >= shelf_life.end_date">Подошел к концу</td>
-          <td v-else-if="Math.floor((shelf_life.purchase_date - shelf_life.end_date) / (1000 * 60 * 60 * 24)) < 3">Подходит к концу</td>
-          <td>Годен</td>
+          <td v-else-if="Math.ceil((new Date(shelf_life.end_date).getTime() - new Date().getTime()) / (1000 * 3600 * 24)) < 4">Подходит к концу</td>
+          <td v-else>Годен</td>
           <td style="text-align: center !important">
             <font-awesome-icon
               @click="
