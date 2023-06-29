@@ -121,6 +121,7 @@ let current_id = route.params.id;
 let name = ref("");
 let description = ref("");
 let ingredients = ref([]);
+let l_ingredients = ref([])
 let selected_steps = ref([]);
 
 let store = useRecipesStore();
@@ -133,6 +134,7 @@ store.getRecipeById(current_id).then((res) => {
 
 store.getRecipeIngredients(current_id).then((res) => {
   ingredients = res;
+  l_ingredients = [...ingredients]
   ingredients.forEach((ingr) => {
     ingr.id_product = ingr.product.id;
     ingr.id_measure = ingr.measure.id;
@@ -193,10 +195,16 @@ async function changeRecipe(values, actions) {
     actions.setFieldError("submit", "Не удалось изменить рецепт");
     return;
   }
-  for (var ingr of ingredients) {
+  for (var ingr of l_ingredients) {
     var t_res1 = await store.deleteRecipeIngredient(current_id, ingr.id_product)
+    if (!t_res1) {
+      actions.setFieldError("submit", "Не удалось изменить рецепт");
+      return;
+    }
+  }
+  for (var ingr of ingredients) {
     var t_res2 = await store.addRecipeIngredient(current_id, ingr);
-    if (!t_res1 && !t_res2) {
+    if (!t_res2) {
       actions.setFieldError("submit", "Не удалось изменить рецепт");
       return;
     }

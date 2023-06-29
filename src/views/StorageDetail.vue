@@ -27,6 +27,7 @@
           <Field
             class="p-[0.7rem] w-full bg-inherit focus-visible:outline-none"
             name="description"
+            :rules="string_rules"
             placeholder="Добавить совет"
             type="text"
           />
@@ -58,6 +59,8 @@ import { useUserStore } from "../stores/UserStore";
 import { storeToRefs } from "pinia";
 import { onMounted, ref } from "vue";
 import { Form, Field, ErrorMessage } from "vee-validate";
+import * as yup from 'yup'
+let string_rules = yup.string().required().min(5);
 const storage = ref({
   type: {
     name: "",

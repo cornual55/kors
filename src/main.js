@@ -29,6 +29,7 @@ yup.setLocale({
   },
   number: {
     moreThan: "Число должно быть больше ${moreThan}",
+    positive: "Число должно быть позитивным"
   },
 });
 

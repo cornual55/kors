@@ -34,6 +34,7 @@ export const useProductsStore = defineStore("products", {
             await this.fetchProducts();
             let product = this.products.find((x) => x.name == name);
             axios.post(`/products/${product.id}/categories/${category_id}`);
+            await this.fetchProducts();
             // НЕТ ID this.products.push({ name: name, id:  });
           } else {
             alert("Не удалось создать продукт");

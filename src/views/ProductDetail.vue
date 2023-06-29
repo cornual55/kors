@@ -27,6 +27,7 @@
             name="description"
             placeholder="Добавить совет"
             type="text"
+            :rules="string_rules"
           />
         </div>
         <ErrorMessage name="description" class="error p-3" />
@@ -56,7 +57,10 @@ import { useRoute, useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { onMounted, ref } from "vue";
 import { Form, Field, ErrorMessage } from "vee-validate";
+import * as yup from 'yup'
+let string_rules = yup.string().required().min(5);
 const product = ref("");
+
 
 const router = useRouter();
 const { isAdmin } = storeToRefs(useUserStore());

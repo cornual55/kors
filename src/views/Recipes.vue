@@ -27,7 +27,7 @@
       v-if="recipes.length === 0"
     >
       Вы еще не добавили не одного рецепта
-      <my-button @click="this.$router.push('/recipes/new')" class="w-36"
+      <my-button v-if="isAdmin" @click="this.$router.push('/recipes/new')" class="w-36"
         >Добавить</my-button
       >
     </div>

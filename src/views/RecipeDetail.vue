@@ -14,7 +14,7 @@
           type="text"
           placeholder="Совет"
         />
-        <ErrorMessage class="error -mt-6" name="name"></ErrorMessage>
+        <ErrorMessage class="error -mt-6" name="description"></ErrorMessage>
         <my-button>Создать</my-button>
         <ErrorMessage class="error -mt-6" name="submit"></ErrorMessage>
       </Form>
@@ -89,9 +89,8 @@ import { useTipsStore } from "../stores/TipsStore";
 import { storeToRefs } from "pinia";
 import { ref, onMounted } from "vue";
 import { Form, Field, ErrorMessage } from "vee-validate";
-import * as yup from "yup";
-
-let string_rules = yup.string().required();
+import * as yup from 'yup'
+let string_rules = yup.string().required().min(5);
 
 let route = useRoute();
 let router = useRouter();

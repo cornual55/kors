@@ -6,7 +6,7 @@
         Срок <br />годности
       </h2>
     </div>
-    <button
+   <button
       class="text-gray-500 w-10 h-10 relative focus:outline-none bg-white md:hidden"
       @click="showMobileMenu = !showMobileMenu"
     >
@@ -16,7 +16,7 @@
       >
         <span
           aria-hidden="true"
-          class="block absolute h-0. w-5 bg-current transform transition duration-500 ease-in-out"
+          class="block absolute h-0.5 w-5 bg-current transform transition duration-500 ease-in-out"
           :class="{
             'rotate-45': showMobileMenu,
             ' -translate-y-1.5': !showMobileMenu,
@@ -36,8 +36,7 @@
           }"
         ></span>
       </div>
-    </button>
-    <div
+    </button>    <div
       class="md:flex basis-full md:basis-auto md:items-center md:justify-between md:gap-3 lg:space-x-10"
       v-bind:class="{ hidden: !showMobileMenu }"
     >

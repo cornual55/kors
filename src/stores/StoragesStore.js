@@ -51,16 +51,23 @@ export const useStoragesStore = defineStore("storages", {
       let new_name = storage.name.toLowerCase();
       const store_user = useUserStore();
       const { user } = storeToRefs(store_user);
-      const id = this.storages ? Object.entries(this.storages).length + 1 : 1;
+      let new_arr = [];
+      this.storages.forEach((str) => {
+        new_arr.push(str.id)
+      })
+      // const id = this.storages.length !== 0 ? Math.max(...new_arr) : 1;
       axios
-        .post(`/users/${user.value.id}/storages/`, {
+        .post(`/storages/`, {
           name: new_name,
           temperature: storage.temperature,
           humidity: storage.humidity,
-          id_type: storage.id_type,
+          id_type: storage.type.id,
         })
-        .then((res) => {
+        .then(async (res) => {
           if (res.status == 200) {
+            let t_res = await axios.get(`/storages?limit=5`)
+            let id = t_res.data.data.count+1
+            await axios.post(`/users/${user.value.id}/storages/${id}`)
             this.fetchStorages();
           }
         })

@@ -62,7 +62,7 @@
     <div class="mt-2">
       <div class="bg-gray-200/70 rounded-xl p-5">
         <ol class="list-decimal ml-5">
-          <div v-if="tips.length === 0">
+          <div v-if="storage.tips.length === 0">
             <p class="text-sm">По этому месту хранения еще нету советов</p>
           </div>
           <li v-else v-for="tip in storage.tips" :key="tip.id">

@@ -166,7 +166,7 @@ export default {
       },
     },
 
-        button_caption: ""
+    button_caption: "",
   },
   data() {
     return {
@@ -193,27 +193,47 @@ export default {
         alert(res.error);
         return;
       }
-      this.purchase_date = res.data[0];
-      this.end_date = res.data[1];
+      if (res.data.length === 1) {
+        this.end_date = new Date(res.data[0]);
+      } else {
+        this.purchase_date = new Date(res.data[0]);
+        this.end_date = new Date(res.data[1]);
+      }
     },
     createShelf() {
-      this.error = ""
+      this.error = "";
+
+      if (this.shelf_life.id_product == "") {
+        alert("Нужно выбрать продукт");
+        return false;
+      }
+      if (this.shelf_life.quantity == 0 && this.shelf_life.quantity == "") {
+        alert("Количество не должно быть пустым полем или равняться нулю");
+        return false;
+      }
+
+      if (this.shelf_life.id_measure == "") {
+        alert("Нужно выбрать меру измерения");
+        return false;
+      }
+      if (this.shelf_life.id_storage == "") {
+        alert("Нужно выбрать место хранения");
+        return false;
+      }
       if (new Date() - this.end_date > 0) {
-        alert("Продукт уже истек")
+        alert("Продукт уже истек");
         return false;
       }
       if (this.purchase_date > this.end_date) {
-        alert("Дата начала не может быть больше даты окончания")
+        alert("Дата начала не может быть больше даты окончания");
         return false;
       }
       this.shelf_life.purchase_date = this.purchase_date.toISOString();
       this.shelf_life.end_date = this.end_date.toISOString();
-      this.$emit("create", { ...this.shelf_life });
-      this.shelf_life.name = "";
+
+      let shl = { ...this.shelf_life };
       this.shelf_life.quantity = "";
-      this.shelf_life.storage = "";
-      this.shelf_life.date_start = "";
-      this.shelf_life.date_end = "";
+      this.$emit("create", { ...shl });
     },
     isNumber(evt) {
       var charCode = evt.keyCode;
@@ -226,7 +246,6 @@ export default {
       }
       return true;
     },
-
   },
   setup() {
     const store_measure = useMeasureStore();
@@ -247,7 +266,14 @@ export default {
       store_products.createProduct();
     };
 
-    return { measures, storages, products, store_products, store_shelf, isAdmin };
+    return {
+      measures,
+      storages,
+      products,
+      store_products,
+      store_shelf,
+      isAdmin,
+    };
   },
   updated() {
     if (this.shelf_life.purchase_date !== undefined) {
